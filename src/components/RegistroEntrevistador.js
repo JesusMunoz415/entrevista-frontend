@@ -1,5 +1,4 @@
-// RegistroEntrevistador.js
-// This file is part of frontend/src/components/RegistroEntrevistador.js
+// frontend/src/components/RegistroEntrevistador.js
 import React, { useState } from 'react';
 
 function RegistroEntrevistador({ onVolver }) {
