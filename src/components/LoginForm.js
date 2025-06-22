@@ -1,3 +1,5 @@
+// File: frontend/src/components/LoginForm.js
+// This file is part of frontend/src/components/LoginForm.js
 import React, { useState, useEffect } from 'react';
 
 function LoginForm({ onLoginExitoso, setPantalla }) {
@@ -23,7 +25,7 @@ function LoginForm({ onLoginExitoso, setPantalla }) {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/login', {
+      const response = await fetch('https://entrevista-backend.onrender.com/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -31,7 +33,7 @@ function LoginForm({ onLoginExitoso, setPantalla }) {
 
       const data = await response.json();
 
-      if (data.status === 'ok') {
+      if (data.status === 'ok' || data.mensaje === 'Login exitoso') {
         localStorage.setItem("entrevistadorId", data.id);
         localStorage.setItem("nombreEntrevistador", data.nombre);
         onLoginExitoso(data.id, data.nombre);
@@ -49,15 +51,36 @@ function LoginForm({ onLoginExitoso, setPantalla }) {
       <h2>Iniciar sesión</h2>
 
       <label>Email:</label>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required style={{ width: '100%' }} />
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        style={{ width: '100%' }}
+      />
 
       <label>Contraseña:</label>
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required style={{ width: '100%' }} />
+      <input
+        type="password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        style={{ width: '100%' }}
+      />
 
       {error && <p style={{ color: 'red' }}>{error}</p>}
 
       <button type="submit" style={{ marginTop: '10px' }}>Entrar</button>
-      <p>¿No tienes cuenta? <button type="button" onClick={() => setPantalla("registro")} style={{ color: '#007bff', background: 'none', border: 'none' }}>Crear cuenta</button></p>
+      <p>
+        ¿No tienes cuenta?{" "}
+        <button
+          type="button"
+          onClick={() => setPantalla("registro")}
+          style={{ color: '#007bff', background: 'none', border: 'none', cursor: 'pointer' }}
+        >
+          Crear cuenta
+        </button>
+      </p>
     </form>
   );
 }

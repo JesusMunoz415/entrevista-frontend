@@ -1,3 +1,5 @@
+// RegistroEntrevistador.js
+// This file is part of frontend/src/components/RegistroEntrevistador.js
 import React, { useState } from 'react';
 
 function RegistroEntrevistador({ onVolver }) {
@@ -18,14 +20,14 @@ function RegistroEntrevistador({ onVolver }) {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/registrar', {
+      const response = await fetch('https://entrevista-backend.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ nombre, email, password })
       });
 
       const data = await response.json();
-      if (data.status === 'ok') {
+      if (data.status === 'ok' || data.mensaje === 'Registro exitoso') {
         setExito(true);
       } else {
         setError(data.mensaje || 'Error al registrar.');
