@@ -1,3 +1,4 @@
+// frontend/src/components/InicioForm.js
 import React, { useState } from 'react';
 
 function InicioForm({ onContinue, entrevistadorId }) {
@@ -12,10 +13,11 @@ function InicioForm({ onContinue, entrevistadorId }) {
     }
 
     try {
-      const response = await fetch('http://localhost:3001/api/postulantes', {
+      const response = await fetch('https://entrevista-backend.onrender.com/api/crear-postulante', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: nombrePostulante })
+        body: JSON.stringify({ nombre: nombrePostulante }),
+        credentials: 'include'
       });
 
       const data = await response.json();
