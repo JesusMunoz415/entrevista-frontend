@@ -15,12 +15,17 @@ function InicioForm({ onContinue, entrevistadorId }) {
     }
 
     try {
-      const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
+          const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: nombrePostulante }),
+        body: JSON.stringify({
+          nombre: nombrePostulante,
+          correo: '',          // enviar aunque sea vacío
+          telefono: ''
+        }),
         credentials: 'include'
       });
+
 
       const data = await response.json();
 
