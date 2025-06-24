@@ -7,6 +7,8 @@ function InicioForm({ onContinue, entrevistadorId }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+
     if (!nombrePostulante.trim()) {
       setError('El nombre del postulante es obligatorio.');
       return;
@@ -14,21 +16,22 @@ function InicioForm({ onContinue, entrevistadorId }) {
 
     try {
       const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({ nombre: nombrePostulante }),
-  credentials: 'include'
-});
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: nombrePostulante }),
+        credentials: 'include'
+      });
 
       const data = await response.json();
+
       if (data.status === 'ok') {
         onContinue(data.id);
       } else {
-        setError('No se pudo registrar el postulante.');
+        setError(data.mensaje || 'No se pudo registrar el postulante.');
       }
     } catch (err) {
-      setError('Error al conectar con el servidor.');
       console.error(err);
+      setError('Error al conectar con el servidor.');
     }
   };
 
