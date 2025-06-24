@@ -13,12 +13,12 @@ function InicioForm({ onContinue, entrevistadorId }) {
     }
 
     try {
-      const response = await fetch('https://entrevista-backend.onrender.com/api/crear-postulante', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre: nombrePostulante }),
-        credentials: 'include'
-      });
+      const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ nombre: nombrePostulante }),
+  credentials: 'include'
+});
 
       const data = await response.json();
       if (data.status === 'ok') {
