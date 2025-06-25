@@ -44,12 +44,12 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId }) {
   };
 
   try {
-    const response = await fetch('https://entrevista-backend.onrender.com/api/guardar-respuesta', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(datos),
-      credentials: 'include'
-    });
+   const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(datos),
+    credentials: 'include'
+});
 
     const result = await response.json();
 
