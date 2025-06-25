@@ -29,41 +29,42 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId }) {
   };
 
   const guardarEnBase = async () => {
-    const respuestasEvaluadas = questions.map((q, i) => ({
-      pregunta_id: i + 1,
-      texto: answers[i] || "",
-      evaluacion_automatica: extractEvalDePregunta(analysis, i + 1),
-      puntaje_manual: manualScores[i],
-      comentario_manual: ""
-    }));
+  const respuestasEvaluadas = questions.map((q, i) => ({
+    pregunta_id: i + 1,
+    texto: answers[i] || "",
+    evaluacion_automatica: extractEvalDePregunta(analysis, i + 1),
+    puntaje_manual: manualScores[i],
+    comentario_manual: ""
+  }));
 
-    const datos = {
-      postulante_id: postulanteId,
-      entrevistador_id: entrevistadorId,
-      respuestas: respuestasEvaluadas
-    };
-
-    try {
-      const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(datos),
-        credentials: 'include'
-      });
-
-      const result = await response.json();
-
-      if (result.status === 'ok') {
-        setEnviado(true);
-        alert("✅ Evaluación guardada correctamente.");
-      } else {
-        alert("⚠️ Hubo un problema al guardar.");
-      }
-    } catch (err) {
-      console.error("❌ Error al enviar al backend:", err);
-      alert("❌ Error de conexión con el backend.");
-    }
+  const datos = {
+    postulante_id: postulanteId,
+    entrevistador_id: entrevistadorId,
+    respuestas: respuestasEvaluadas
   };
+
+  try {
+    const response = await fetch('https://entrevista-backend.onrender.com/api/guardar-respuesta', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(datos),
+      credentials: 'include'
+    });
+
+    const result = await response.json();
+
+    if (result.status === 'ok') {
+      setEnviado(true);
+      alert("✅ Evaluación guardada correctamente.");
+    } else {
+      alert("⚠️ Hubo un problema al guardar.");
+    }
+  } catch (err) {
+    console.error("❌ Error al enviar al backend:", err);
+    alert("❌ Error de conexión con el backend.");
+  }
+};
+
 
   const extractEvalDePregunta = (analysisText, preguntaId) => analysisText;
 
