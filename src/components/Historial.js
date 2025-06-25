@@ -1,3 +1,4 @@
+// File: frontend/src/components/Historial.js
 import React, { useEffect, useState } from 'react';
 
 function Historial({ entrevistadorId, onVolver }) {
@@ -8,10 +9,11 @@ function Historial({ entrevistadorId, onVolver }) {
   useEffect(() => {
     const obtenerHistorial = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/historial', {
+        const response = await fetch('https://entrevista-backend.onrender.com/api/historial', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ entrevistador_id: entrevistadorId })
+          body: JSON.stringify({ entrevistador_id: entrevistadorId }),
+          credentials: 'include'
         });
 
         const data = await response.json();
