@@ -1,4 +1,3 @@
-// File: frontend/src/components/Historial.js
 import React, { useEffect, useState } from 'react';
 
 function Historial({ entrevistadorId, onVolver }) {
@@ -12,9 +11,10 @@ function Historial({ entrevistadorId, onVolver }) {
         const response = await fetch('https://entrevista-backend.onrender.com/api/historial', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ entrevistador_id: entrevistadorId }),
-          credentials: 'include'
+          body: JSON.stringify({ entrevistador_id: entrevistadorId })
         });
+
+        if (!response.ok) throw new Error('Fallo en la petición');
 
         const data = await response.json();
         if (data.status === 'ok') {
@@ -23,7 +23,7 @@ function Historial({ entrevistadorId, onVolver }) {
           setError('No se pudo obtener el historial.');
         }
       } catch (err) {
-        console.error(err);
+        console.error('Error en fetch:', err);
         setError('Error de conexión con el servidor.');
       } finally {
         setCargando(false);
@@ -47,7 +47,7 @@ function Historial({ entrevistadorId, onVolver }) {
         entrevistas.map((entrevista, i) => (
           <div key={i} style={{ padding: '15px', marginBottom: '25px', backgroundColor: '#fdfdfd', border: '1px solid #ccc', borderRadius: '8px' }}>
             <p><strong>Postulante:</strong> {entrevista.postulante}</p>
-            <p><strong>Fecha:</strong> {entrevista.fecha}</p>
+            <p><strong>Fecha:</strong> {new Date(entrevista.fecha).toLocaleString()}</p>
 
             {entrevista.respuestas.map((r, j) => (
               <div key={j} style={{ marginTop: '12px', padding: '10px', backgroundColor: '#f5f5f5', borderRadius: '6px' }}>
