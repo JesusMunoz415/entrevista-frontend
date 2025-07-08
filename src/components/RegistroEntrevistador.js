@@ -22,13 +22,12 @@ function RegistroEntrevistador({ onVolver }) {
       const response = await fetch('https://entrevista-backend.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nombre, email, password }),
-        credentials: 'include'
+        body: JSON.stringify({ nombre, email, password })
       });
 
       const data = await response.json();
 
-      if (data.status === 'ok' || data.mensaje === 'Registro exitoso') {
+      if (response.ok && (data.status === 'ok' || data.mensaje === 'Registro exitoso')) {
         setExito(true);
       } else {
         setError(data.mensaje || 'Error al registrar.');
