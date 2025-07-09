@@ -22,6 +22,7 @@ function RegistroEntrevistador({ onVolver }) {
       const response = await fetch('https://entrevista-backend.onrender.com/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include', // 👈 Necesario para CORS + cookies
         body: JSON.stringify({ nombre, email, password })
       });
 
