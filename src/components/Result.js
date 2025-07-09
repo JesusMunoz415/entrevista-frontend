@@ -45,10 +45,14 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId }) {
 
   try {
    const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(datos),
-    credentials: 'include'
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    entrevista_id: entrevistaId,
+    respuestas: respuestas,
+  }),
 });
 
     const result = await response.json();
