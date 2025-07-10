@@ -42,7 +42,8 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
       entrevista_id: entrevistaId,
       respuestas: respuestasEvaluadas
     };
-
+  // 👀 Imprimir JSON enviado al backend
+    console.log("✅ Datos enviados al backend:", JSON.stringify(datos, null, 2));
     try {
       const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
         method: 'POST',
