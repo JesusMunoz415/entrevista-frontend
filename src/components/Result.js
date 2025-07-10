@@ -34,7 +34,8 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
       texto: answers[i] || "",
       evaluacion_automatica: extractEvalDePregunta(analysis, i + 1),
       puntaje_manual: manualScores[i],
-      comentario_manual: ""
+      comentario_manual: "",
+      fecha: new Date().toISOString() // 🟢 AÑADIDO: Fecha ISO
     }));
 
     const datos = {
@@ -69,7 +70,6 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
   };
 
   const extractEvalDePregunta = (analysisText, preguntaId) => {
-    // Por ahora devolvemos todo el análisis como placeholder
     return analysisText || "";
   };
 
