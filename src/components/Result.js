@@ -1,5 +1,3 @@
-// frontend/src/components/Result.js
-
 import React, { useState } from 'react';
 
 const questions = [
@@ -35,14 +33,12 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
       evaluacion_automatica: extractEvalDePregunta(analysis, i + 1),
       puntaje_manual: manualScores[i],
       comentario_manual: "",
-      fecha: new Date().toISOString() // 🟢 AÑADIDO: Fecha ISO
+      fecha: new Date().toISOString() // ✅ Fecha en formato ISO
     }));
 
     const datos = {
       entrevista_id: entrevistaId,
-      postulante_id: postulanteId,
-      entrevistador_id: entrevistadorId,
-      respuestas: respuestasEvaluadas
+      respuestas: respuestasEvaluadas // ✅ Solo mandamos lo necesario
     };
 
     try {
@@ -70,6 +66,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
   };
 
   const extractEvalDePregunta = (analysisText, preguntaId) => {
+    // Placeholder para evaluación automática
     return analysisText || "";
   };
 
