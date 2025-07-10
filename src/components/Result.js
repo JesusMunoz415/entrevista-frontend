@@ -30,12 +30,12 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
 
   const guardarEnBase = async () => {
     const respuestasEvaluadas = questions.map((q, i) => ({
-      pregunta_id: i + 1,
-      texto: answers[i] || "Sin respuesta", // 👈 Valor por defecto si viene vacío
-      evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "Sin evaluación",
-      puntaje_manual: manualScores[i],
-      comentario_manual: "",
-      fecha: new Date().toISOString() // 👈 Formato ISO para evitar errores
+  pregunta_id: i + 1,
+  texto: answers[i] || "",
+  evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "",
+  puntaje_manual: manualScores[i],
+  comentario_manual: "",
+  fecha: new Date() // Fecha como objeto Date
     }));
 
     const datos = {
