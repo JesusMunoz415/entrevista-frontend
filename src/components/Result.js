@@ -1,3 +1,5 @@
+// frontend/src/components/Result.js
+
 import React, { useState } from 'react';
 
 const questions = [
@@ -27,19 +29,18 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
   };
 
   const guardarEnBase = async () => {
-   const respuestasEvaluadas = questions.map((q, i) => ({
-  pregunta_id: i + 1,
-  texto: answers[i] || "Sin respuesta",
-  evaluacion_automatica: extractEvalDePregunta(analysis, i + 1),
-  puntaje_manual: manualScores[i],
-  comentario_manual: "",
-  fecha: new Date().toISOString() // Formato ISO válido
-}));
-    
+    const respuestasEvaluadas = questions.map((q, i) => ({
+      pregunta_id: i + 1,
+      texto: answers[i] || "Sin respuesta", // 👈 Valor por defecto si viene vacío
+      evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "Sin evaluación",
+      puntaje_manual: manualScores[i],
+      comentario_manual: "",
+      fecha: new Date().toISOString() // 👈 Formato ISO para evitar errores
+    }));
 
     const datos = {
       entrevista_id: entrevistaId,
-      respuestas: respuestasEvaluadas // ✅ Solo mandamos lo necesario
+      respuestas: respuestasEvaluadas
     };
 
     try {
@@ -67,8 +68,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
   };
 
   const extractEvalDePregunta = (analysisText, preguntaId) => {
-    // Placeholder para evaluación automática
-    return analysisText || "";
+    return analysisText || "Sin análisis"; // 👈 Valor por defecto
   };
 
   return (
