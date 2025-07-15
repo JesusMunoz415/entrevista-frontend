@@ -11,6 +11,12 @@ import Historial from './components/Historial';
 import Dashboard from './components/Dashboard'; // 👈 nuevo import
 import EntrevistaPostulante from './components/EntrevistaPostulante'; // 👈 añadido
 
+//solo sienteme
+//calientate
+//te como a gatas
+//seras mi mujerrrrrrrrrr
+
+
 function App() {
   const [pantalla, setPantalla] = useState("login");
   const [entrevistadorId, setEntrevistadorId] = useState(null);
@@ -51,16 +57,8 @@ function App() {
     setPantalla("login");
   };
 
-
-//solo sienteme
-//calientate
-//te como a gatas
-//seras mi mujerrrrrrrrrr
-
-
-
   return (
-    <Router>
+    <Router basename="/"> {/* 👈 Aquí el basename */}
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
         <h1>Entrevista Inteligente RH</h1>
 
