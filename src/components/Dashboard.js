@@ -1,58 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
-
-  const handleGestionarEntrevistas = () => {
-    alert("🔧 Aquí irá la gestión de entrevistas");
-  };
-
-  const handleVerPostulantes = () => {
-    alert("🧑‍💼 Aquí irá la lista de postulantes");
-  };
-
-  const handleVerHistorial = () => {
-    alert("📜 Aquí irá el historial de entrevistas");
-  };
-
-  const handleConfiguracion = () => {
-    alert("⚙️ Aquí irá la configuración de la cuenta");
-  };
+  const [vista, setVista] = useState("home");
 
   const handleCerrarSesion = () => {
     localStorage.clear();
     window.location.reload();
   };
 
+  const renderContenido = () => {
+    switch (vista) {
+      case "entrevistas":
+        return <GestionarEntrevistas />;
+      case "postulantes":
+        return <VerPostulantes />;
+      case "historial":
+        return <VerHistorial />;
+      case "configuracion":
+        return <Configuracion />;
+      default:
+        return (
+          <div>
+            <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
+            <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
+            <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
+          </div>
+        );
+    }
+  };
+
   return (
     <div style={styles.container}>
-      
+      <h1 style={styles.title}>🎯 Entrevista Inteligente RH</h1>
 
       <div style={styles.card}>
-        <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
-        <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
-
-        <div style={styles.buttonGroup}>
-          <button onClick={handleGestionarEntrevistas} style={styles.button}>
+        <div style={styles.sidebar}>
+          <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
             📁 Gestionar Entrevistas
           </button>
-          <button onClick={handleVerPostulantes} style={styles.button}>
+          <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
             🧑‍💼 Ver Postulantes
           </button>
-          <button onClick={handleVerHistorial} style={styles.button}>
+          <button onClick={() => setVista("historial")} style={styles.menuButton}>
             📜 Ver Historial
           </button>
-          <button onClick={handleConfiguracion} style={styles.button}>
+          <button onClick={() => setVista("configuracion")} style={styles.menuButton}>
             ⚙️ Configuración
           </button>
-          <button onClick={handleCerrarSesion} style={{ ...styles.button, ...styles.logoutButton }}>
+          <button onClick={handleCerrarSesion} style={{ ...styles.menuButton, ...styles.logoutButton }}>
             🚪 Cerrar sesión
           </button>
+        </div>
+
+        <div style={styles.content}>
+          {renderContenido()}
         </div>
       </div>
     </div>
   );
 }
+
+// Subcomponentes de ejemplo
+const GestionarEntrevistas = () => (
+  <div>
+    <h2>📁 Gestión de Entrevistas</h2>
+    <p>Aquí podrás crear, editar y eliminar entrevistas.</p>
+  </div>
+);
+
+const VerPostulantes = () => (
+  <div>
+    <h2>🧑‍💼 Lista de Postulantes</h2>
+    <p>Aquí podrás ver y gestionar los postulantes.</p>
+  </div>
+);
+
+const VerHistorial = () => (
+  <div>
+    <h2>📜 Historial de Entrevistas</h2>
+    <p>Aquí verás el historial completo de entrevistas.</p>
+  </div>
+);
+
+const Configuracion = () => (
+  <div>
+    <h2>⚙️ Configuración</h2>
+    <p>Aquí podrás actualizar tu perfil y contraseña.</p>
+  </div>
+);
 
 const styles = {
   container: {
@@ -60,24 +96,51 @@ const styles = {
     justifyContent: 'center',
     alignItems: 'center',
     height: '90vh',
-    background: 'linear-gradient(135deg, #f0f2f5, #d9e4f5)',
+    background: 'linear-gradient(135deg, #f8f9fa, #d9e4f5)',
     fontFamily: 'Arial, sans-serif'
   },
   title: {
     position: 'absolute',
-    top: '30px',
-    textAlign: 'center',
-    fontSize: '2.5rem',
+    top: '20px',
+    fontSize: '2rem',
     color: '#343a40'
   },
   card: {
-    backgroundColor: '#ffffff',
-    padding: '30px',
-    borderRadius: '12px',
-    boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
-    textAlign: 'center',
+    display: 'flex',
     width: '90%',
-    maxWidth: '500px'
+    maxWidth: '1000px',
+    height: '600px',
+    backgroundColor: '#ffffff',
+    borderRadius: '12px',
+    boxShadow: '0 8px 20px rgba(0,0,0,0.15)'
+  },
+  sidebar: {
+    width: '250px',
+    backgroundColor: '#f1f3f5',
+    borderTopLeftRadius: '12px',
+    borderBottomLeftRadius: '12px',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '10px'
+  },
+  menuButton: {
+    padding: '10px',
+    fontSize: '1rem',
+    borderRadius: '6px',
+    border: 'none',
+    backgroundColor: '#007bff',
+    color: '#fff',
+    cursor: 'pointer',
+    transition: 'background-color 0.3s ease'
+  },
+  logoutButton: {
+    backgroundColor: '#dc3545'
+  },
+  content: {
+    flexGrow: 1,
+    padding: '30px',
+    overflowY: 'auto'
   },
   welcome: {
     fontSize: '1.8rem',
@@ -89,27 +152,7 @@ const styles = {
   },
   subtext: {
     fontSize: '1rem',
-    color: '#6c757d',
-    marginBottom: '20px'
-  },
-  buttonGroup: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '12px'
-  },
-  button: {
-    padding: '12px 20px',
-    fontSize: '1rem',
-    borderRadius: '8px',
-    border: '1px solid #007bff',
-    backgroundColor: '#007bff',
-    color: '#ffffff',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease'
-  },
-  logoutButton: {
-    backgroundColor: '#dc3545',
-    border: '1px solid #dc3545'
+    color: '#6c757d'
   }
 };
 
