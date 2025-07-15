@@ -1,15 +1,13 @@
 // frontend/src/App.js
-
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // 👈 añadido
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
 import InicioForm from './components/InicioForm';
 import QuestionForm from './components/QuestionForm';
 import Result from './components/Result';
 import Historial from './components/Historial';
-import Dashboard from './components/Dashboard'; // 👈 nuevo import
-import EntrevistaPostulante from './components/EntrevistaPostulante'; // 👈 añadido
+import Dashboard from './components/Dashboard';
 
 function App() {
   const [pantalla, setPantalla] = useState("login");
@@ -22,7 +20,7 @@ function App() {
   const handleLogin = (id, nombre) => {
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
-    setPantalla("dashboard"); // 👈 Redirige al Dashboard
+    setPantalla("dashboard");
   };
 
   const handleInicio = (postId) => {
@@ -40,7 +38,7 @@ function App() {
     setAnalysis('');
     setAnswers([]);
     setPostulanteId(null);
-    setPantalla("dashboard"); // 👈 Regresa al Dashboard
+    setPantalla("dashboard");
   };
 
   const cerrarSesion = () => {
@@ -69,48 +67,13 @@ function App() {
         )}
 
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                {pantalla === "login" && (
-                  <LoginForm onLoginExitoso={handleLogin} setPantalla={setPantalla} />
-                )}
-
-                {pantalla === "registro" && (
-                  <RegistroEntrevistador onVolver={() => setPantalla("login")} />
-                )}
-
-                {pantalla === "dashboard" && (
-                  <Dashboard entrevistadorId={entrevistadorId} />
-                )}
-
-                {pantalla === "formulario" && (
-                  <QuestionForm
-                    onSubmit={handleFormSubmit}
-                    entrevistadorId={entrevistadorId}
-                    postulanteId={postulanteId}
-                  />
-                )}
-
-                {pantalla === "resultado" && (
-                  <Result
-                    analysis={analysis}
-                    answers={answers}
-                    onBack={handleBack}
-                    entrevistadorId={entrevistadorId}
-                    postulanteId={postulanteId}
-                  />
-                )}
-
-                {pantalla === "historial" && (
-                  <Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("dashboard")} />
-                )}
-              </>
-            }
-          />
-
-          <Route path="/entrevista/:token" element={<EntrevistaPostulante />} /> {/* 👈 Ruta pública para postulantes */}
+          <Route path="/" element={<LoginForm onLoginExitoso={handleLogin} setPantalla={setPantalla} />} />
+          <Route path="/registro" element={<RegistroEntrevistador onVolver={() => setPantalla("login")} />} />
+          <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
+          <Route path="/formulario" element={<QuestionForm onSubmit={handleFormSubmit} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
+          <Route path="/resultado" element={<Result analysis={analysis} answers={answers} onBack={handleBack} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
+          <Route path="/historial" element={<Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("dashboard")} />} />
+          <Route path="/entrevista/:token" element={<InicioForm onContinue={handleInicio} entrevistadorId={entrevistadorId} />} />
         </Routes>
       </div>
     </Router>
