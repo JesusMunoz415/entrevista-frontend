@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import VerPostulantes from './VerPostulantes';
+import VerPostulantes from './VerPostulantes'; // ✅ Importar el archivo externo
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
@@ -12,14 +12,19 @@ function Dashboard({ entrevistadorId }) {
 
   const renderContenido = () => {
     switch (vista) {
+      case "entrevistas":
+        return <GestionarEntrevistas />;
       case "postulantes":
-        return <VerPostulantes />;
-      case "home":
+        return <VerPostulantes />; // ✅ Llama al componente externo
+      case "historial":
+        return <VerHistorial />;
+      case "configuracion":
+        return <Configuracion />;
       default:
         return (
           <div>
-            <h2>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
-            <p>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
+            <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
+            <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
           </div>
         );
@@ -31,8 +36,17 @@ function Dashboard({ entrevistadorId }) {
 
       <div style={styles.card}>
         <div style={styles.sidebar}>
+          <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
+            📁 Gestionar Entrevistas
+          </button>
           <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
             🧑‍💼 Ver Postulantes
+          </button>
+          <button onClick={() => setVista("historial")} style={styles.menuButton}>
+            📜 Ver Historial
+          </button>
+          <button onClick={() => setVista("configuracion")} style={styles.menuButton}>
+            ⚙️ Configuración
           </button>
           <button onClick={handleCerrarSesion} style={{ ...styles.menuButton, ...styles.logoutButton }}>
             🚪 Cerrar sesión
@@ -46,6 +60,28 @@ function Dashboard({ entrevistadorId }) {
     </div>
   );
 }
+
+// Subcomponentes de ejemplo
+const GestionarEntrevistas = () => (
+  <div>
+    <h2>📁 Gestión de Entrevistas</h2>
+    <p>Aquí podrás crear, editar y eliminar entrevistas.</p>
+  </div>
+);
+
+const VerHistorial = () => (
+  <div>
+    <h2>📜 Historial de Entrevistas</h2>
+    <p>Aquí verás el historial completo de entrevistas.</p>
+  </div>
+);
+
+const Configuracion = () => (
+  <div>
+    <h2>⚙️ Configuración</h2>
+    <p>Aquí podrás actualizar tu perfil y contraseña.</p>
+  </div>
+);
 
 const styles = {
   container: {
@@ -99,8 +135,17 @@ const styles = {
     padding: '30px',
     overflowY: 'auto'
   },
+  welcome: {
+    fontSize: '1.8rem',
+    marginBottom: '10px',
+    color: '#212529'
+  },
   username: {
     color: '#007bff'
+  },
+  subtext: {
+    fontSize: '1rem',
+    color: '#6c757d'
   }
 };
 
