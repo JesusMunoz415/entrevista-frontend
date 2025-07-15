@@ -110,7 +110,11 @@ function App() {
             }
           />
 
-          <Route path="/entrevista/:token" element={<EntrevistaPostulante />} /> {/* 👈 Ruta pública para postulantes */}
+          {/* 👇 Ruta pública para postulantes con token */}
+          <Route
+            path="/entrevista/:token"
+            element={<InicioForm onContinue={handleInicio} />}
+          />
         </Routes>
       </div>
     </Router>
