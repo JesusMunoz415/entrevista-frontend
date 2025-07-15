@@ -1,3 +1,5 @@
+// frontend/src/App.js
+
 import React, { useState } from 'react';
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
@@ -5,6 +7,7 @@ import InicioForm from './components/InicioForm';
 import QuestionForm from './components/QuestionForm';
 import Result from './components/Result';
 import Historial from './components/Historial';
+import Dashboard from './components/Dashboard'; // 👈 nuevo import
 
 function App() {
   const [pantalla, setPantalla] = useState("login");
@@ -17,7 +20,7 @@ function App() {
   const handleLogin = (id, nombre) => {
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
-    setPantalla("inicio");
+    setPantalla("dashboard"); // 👈 Redirige al Dashboard
   };
 
   const handleInicio = (postId) => {
@@ -35,7 +38,7 @@ function App() {
     setAnalysis('');
     setAnswers([]);
     setPostulanteId(null);
-    setPantalla("inicio");
+    setPantalla("dashboard"); // 👈 Regresa al Dashboard en vez de InicioForm
   };
 
   const cerrarSesion = () => {
@@ -70,8 +73,8 @@ function App() {
         <RegistroEntrevistador onVolver={() => setPantalla("login")} />
       )}
 
-      {pantalla === "inicio" && (
-        <InicioForm onContinue={handleInicio} entrevistadorId={entrevistadorId} />
+      {pantalla === "dashboard" && (
+        <Dashboard entrevistadorId={entrevistadorId} />
       )}
 
       {pantalla === "formulario" && (
@@ -93,7 +96,7 @@ function App() {
       )}
 
       {pantalla === "historial" && (
-        <Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("inicio")} />
+        <Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("dashboard")} />
       )}
     </div>
   );
