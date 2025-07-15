@@ -1,5 +1,6 @@
 {
-  "routes": {
-    "/**": "index.html"
-  }
+  "redirects": [
+    { "source": "/entrevista/*", "destination": "/", "statusCode": 200 },
+    { "source": "/*", "destination": "/", "statusCode": 200 }
+  ]
 }
