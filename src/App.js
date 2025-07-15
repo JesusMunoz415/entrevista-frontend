@@ -1,21 +1,15 @@
 // frontend/src/App.js
 
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // 👈 añadido
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
 import InicioForm from './components/InicioForm';
 import QuestionForm from './components/QuestionForm';
 import Result from './components/Result';
 import Historial from './components/Historial';
-import Dashboard from './components/Dashboard'; // 👈 nuevo import
-import EntrevistaPostulante from './components/EntrevistaPostulante'; // 👈 añadido
-
-//solo sienteme
-//calientate
-//te como a gatas
-//seras mi mujerrrrrrrrrr
-
+import Dashboard from './components/Dashboard';
+import EntrevistaPostulante from './components/EntrevistaPostulante';
 
 function App() {
   const [pantalla, setPantalla] = useState("login");
@@ -28,7 +22,7 @@ function App() {
   const handleLogin = (id, nombre) => {
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
-    setPantalla("dashboard"); // 👈 Redirige al Dashboard
+    setPantalla("dashboard");
   };
 
   const handleInicio = (postId) => {
@@ -46,7 +40,7 @@ function App() {
     setAnalysis('');
     setAnswers([]);
     setPostulanteId(null);
-    setPantalla("dashboard"); // 👈 Regresa al Dashboard
+    setPantalla("dashboard");
   };
 
   const cerrarSesion = () => {
@@ -58,7 +52,7 @@ function App() {
   };
 
   return (
-    <Router basename="/"> {/* 👈 Aquí el basename */}
+    <Router>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
         <h1>Entrevista Inteligente RH</h1>
 

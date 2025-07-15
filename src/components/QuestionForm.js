@@ -1,6 +1,5 @@
-//fron
-
 import React, { useState } from 'react';
+import { useParams } from 'react-router-dom'; // 👈 importar useParams
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -25,6 +24,7 @@ const palabrasClave = [
 ];
 
 function QuestionForm({ onSubmit }) {
+  const { token } = useParams(); // 👈 obtenemos el token desde la URL
   const [answers, setAnswers] = useState(Array(8).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -74,9 +74,25 @@ function QuestionForm({ onSubmit }) {
     try {
       await new Promise(resolve => setTimeout(resolve, 800));
       const result = evaluarRespuestas(answers);
+
+      // 👇 Llama a onSubmit para flujo actual
       onSubmit(result, answers);
+
+      // 🚀 Actualiza estado de entrevista en el backend
+      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${token}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ estado: 'completada' })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al actualizar estado de entrevista.');
+      }
+
+      alert('✅ Respuestas guardadas y entrevista marcada como completada.');
     } catch (err) {
-      setError('Hubo un error al procesar las respuestas.');
+      console.error(err);
+      setError('❌ Hubo un error al enviar las respuestas.');
     } finally {
       setLoading(false);
     }

@@ -1,7 +1,10 @@
 // frontend/src/components/InicioForm.js
-import React, { useState } from 'react';
 
-function InicioForm({ onContinue, entrevistadorId }) {
+import React, { useState } from 'react';
+import { useParams } from 'react-router-dom'; // 👈 importar useParams
+
+function InicioForm({ onContinue }) {
+  const { token } = useParams(); // 👈 obtener el token de la URL
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
 
@@ -15,17 +18,17 @@ function InicioForm({ onContinue, entrevistadorId }) {
     }
 
     try {
-          const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
+      const response = await fetch(`https://entrevista-backend.onrender.com/api/postulantes`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: nombrePostulante,
-          correo: '',          // enviar aunque sea vacío
+          token: token, // 👈 enviar también el token
+          correo: '',
           telefono: ''
         }),
         credentials: 'include'
       });
-
 
       const data = await response.json();
 
@@ -43,7 +46,7 @@ function InicioForm({ onContinue, entrevistadorId }) {
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
       <h2>Inicio de entrevista</h2>
-      <p><strong>Entrevistador ID:</strong> {entrevistadorId}</p>
+      <p><strong>Token de entrevista:</strong> {token}</p>
 
       <label>Nombre del postulante:</label>
       <input
