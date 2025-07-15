@@ -51,6 +51,14 @@ function App() {
     setPantalla("login");
   };
 
+
+//solo sienteme
+//calientate
+//te como a gatas
+//seras mi mujerrrrrrrrrr
+
+
+
   return (
     <Router>
       <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
