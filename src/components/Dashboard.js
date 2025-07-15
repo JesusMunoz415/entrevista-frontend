@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import VerPostulantes from './VerPostulantes'; // ✅ Importar el archivo externo
+import VerPostulantes from './VerPostulantes'; // ✅ Importa archivo externo
+import GestionarEntrevistas from './GestionarEntrevistas';
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
@@ -13,13 +14,13 @@ function Dashboard({ entrevistadorId }) {
   const renderContenido = () => {
     switch (vista) {
       case "entrevistas":
-        return <GestionarEntrevistas />;
+        return <GestionarEntrevistas entrevistadorId={entrevistadorId} />; // ✅ Archivo externo
       case "postulantes":
-        return <VerPostulantes />; // ✅ Llama al componente externo
+        return <VerPostulantes />; // ✅ Archivo externo
       case "historial":
-        return <VerHistorial />;
+        return <VerHistorial />;   // ⚠️ Mantén o importa externo luego
       case "configuracion":
-        return <Configuracion />;
+        return <Configuracion />; // ⚠️ Mantén o importa externo luego
       default:
         return (
           <div>
@@ -33,7 +34,6 @@ function Dashboard({ entrevistadorId }) {
 
   return (
     <div style={styles.container}>
-
       <div style={styles.card}>
         <div style={styles.sidebar}>
           <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
@@ -61,14 +61,7 @@ function Dashboard({ entrevistadorId }) {
   );
 }
 
-// Subcomponentes de ejemplo
-const GestionarEntrevistas = () => (
-  <div>
-    <h2>📁 Gestión de Entrevistas</h2>
-    <p>Aquí podrás crear, editar y eliminar entrevistas.</p>
-  </div>
-);
-
+// ⚠️ Subcomponentes temporales (mover a archivos externos después)
 const VerHistorial = () => (
   <div>
     <h2>📜 Historial de Entrevistas</h2>
@@ -82,6 +75,7 @@ const Configuracion = () => (
     <p>Aquí podrás actualizar tu perfil y contraseña.</p>
   </div>
 );
+
 
 const styles = {
   container: {
