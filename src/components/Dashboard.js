@@ -26,7 +26,7 @@ function Dashboard({ entrevistadorId }) {
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.title}>🎯 Entrevista Inteligente RH</h1>
+      
 
       <div style={styles.card}>
         <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
