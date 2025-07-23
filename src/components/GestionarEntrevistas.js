@@ -48,19 +48,19 @@ const GestionarEntrevistas = ({ entrevistadorId }) => {
       });
       const data = await response.json();
 
-      if (data.status === 'ok') {
-        setEnlace(data.enlace); // 📎 Mostrar enlace único
-        setMensaje('✅ Entrevista creada exitosamente.');
-        setPostulanteId('');
-        setFecha('');
-        // Recargar lista
-        setEntrevistas(prev => [...prev, { ...data.entrevista, estado: 'pendiente' }]);
+     if (data.status === 'ok') {
+          setEnlace(data.enlace); // 📎 Mostrar enlace único
+          setMensaje('✅ Entrevista creada exitosamente.');
+          setPostulanteId('');
+          setFecha('');
+          // Recargar lista
+          setEntrevistas(prev => [...prev, { ...data.entrevista, estado: 'pendiente' }]);
 
-        // 🌟 Redirigir a inicios.form con el token
-        window.location.href = `/inicios.form/${data.enlace}`;
-      } else {
-        setMensaje(data.mensaje || '❌ Error al crear entrevista.');
-      }
+          // 🌟 Redirigir directamente al enlace generado
+          window.location.href = `${data.enlace}`;
+        } else {
+          setMensaje(data.mensaje || '❌ Error al crear entrevista.');
+        }
     } catch (err) {
       console.error('❌ Error en la creación:', err);
       setMensaje('❌ Error al conectar con el servidor.');
