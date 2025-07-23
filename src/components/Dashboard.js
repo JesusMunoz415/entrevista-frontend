@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import VerPostulantes from './VerPostulantes'; // ✅ Importa archivo externo
 import GestionarEntrevistas from './GestionarEntrevistas';
+import InicioForm from './InicioForm'; // ✅ Importa InicioForm
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
@@ -14,13 +15,14 @@ function Dashboard({ entrevistadorId }) {
   const renderContenido = () => {
     switch (vista) {
       case "entrevistas":
-        return <GestionarEntrevistas entrevistadorId={entrevistadorId} />; // ✅ Archivo externo
+        // ✅ Ahora carga InicioForm en lugar de GestionarEntrevistas
+        return <InicioForm />;
       case "postulantes":
-        return <VerPostulantes />; // ✅ Archivo externo
+        return <VerPostulantes />;
       case "historial":
-        return <VerHistorial />;   // ⚠️ Mantén o importa externo luego
+        return <VerHistorial />;
       case "configuracion":
-        return <Configuracion />; // ⚠️ Mantén o importa externo luego
+        return <Configuracion />;
       default:
         return (
           <div>
@@ -75,7 +77,6 @@ const Configuracion = () => (
     <p>Aquí podrás actualizar tu perfil y contraseña.</p>
   </div>
 );
-
 
 const styles = {
   container: {
