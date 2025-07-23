@@ -1,10 +1,8 @@
 // frontend/src/components/InicioForm.js
 
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom'; // 👈 importar useParams
 
 function InicioForm({ onContinue }) {
-  const { token } = useParams(); // 👈 obtener el token de la URL
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
 
@@ -23,7 +21,6 @@ function InicioForm({ onContinue }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: nombrePostulante,
-          token: token, // 👈 enviar también el token
           correo: '',
           telefono: ''
         }),
@@ -46,7 +43,6 @@ function InicioForm({ onContinue }) {
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
       <h2>Inicio de entrevista</h2>
-      <p><strong>Token de entrevista:</strong> {token}</p>
 
       <label>Nombre del postulante:</label>
       <input

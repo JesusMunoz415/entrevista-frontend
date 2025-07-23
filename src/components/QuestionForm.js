@@ -1,5 +1,6 @@
+// frontend/src/components/QuestionForm.js
+
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom'; // 👈 importar useParams
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -23,8 +24,7 @@ const palabrasClave = [
   ["frameworks", "trabajado", "desarrolló"]
 ];
 
-function QuestionForm({ onSubmit }) {
-  const { token } = useParams(); // 👈 obtenemos el token desde la URL
+function QuestionForm({ onSubmit, entrevistaId }) {
   const [answers, setAnswers] = useState(Array(8).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -79,7 +79,7 @@ function QuestionForm({ onSubmit }) {
       onSubmit(result, answers);
 
       // 🚀 Actualiza estado de entrevista en el backend
-      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${token}`, {
+      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${entrevistaId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ estado: 'completada' })
