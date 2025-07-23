@@ -1,3 +1,5 @@
+// frontend/src/components/GestionarEntrevistas.js
+
 import React, { useState, useEffect } from 'react';
 
 const GestionarEntrevistas = ({ entrevistadorId }) => {
@@ -53,6 +55,9 @@ const GestionarEntrevistas = ({ entrevistadorId }) => {
         setFecha('');
         // Recargar lista
         setEntrevistas(prev => [...prev, { ...data.entrevista, estado: 'pendiente' }]);
+
+        // 🌟 Redirigir a inicios.form con el token
+        window.location.href = `/inicios.form/${data.enlace}`;
       } else {
         setMensaje(data.mensaje || '❌ Error al crear entrevista.');
       }
