@@ -6,6 +6,7 @@ import InicioForm from './InicioForm'; // ✅ Importa InicioForm
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
   const [vista, setVista] = useState("home");
+  const [enlace, setEnlace] = useState('https://entrevista-frontend.onrender.com/inicios.form');
 
   const handleCerrarSesion = () => {
     localStorage.clear();
@@ -15,8 +16,8 @@ function Dashboard({ entrevistadorId }) {
   const renderContenido = () => {
     switch (vista) {
       case "entrevistas":
-        // ✅ Ahora carga InicioForm en lugar de GestionarEntrevistas
-        return <InicioForm />;
+        // ✅ Ahora carga InicioForm y pasa un onContinue vacío
+        return <InicioForm onContinue={() => {}} />;
       case "postulantes":
         return <VerPostulantes />;
       case "historial":
@@ -29,6 +30,23 @@ function Dashboard({ entrevistadorId }) {
             <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
             <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
+            
+            {/* 🔗 Cuadro de texto con el enlace */}
+            <div style={{ marginTop: '20px' }}>
+              <label>🔗 Enlace de InicioForm:</label>
+              <input
+                type="text"
+                value={enlace}
+                readOnly
+                style={{
+                  width: '100%',
+                  padding: '8px',
+                  marginTop: '5px',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px'
+                }}
+              />
+            </div>
           </div>
         );
     }
