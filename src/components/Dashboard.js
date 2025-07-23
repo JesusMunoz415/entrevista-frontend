@@ -16,8 +16,10 @@ function Dashboard({ entrevistadorId }) {
   const renderContenido = () => {
     switch (vista) {
       case "entrevistas":
-        // ✅ Ahora carga InicioForm y pasa un onContinue vacío
-        return <InicioForm onContinue={() => {}} />;
+        // ✅ Ahora carga InicioForm y redirige al registrar el postulante
+        return <InicioForm onContinue={(postulanteId) => {
+          window.location.href = `/entrevista/${postulanteId}`;
+        }} />;
       case "postulantes":
         return <VerPostulantes />;
       case "historial":
@@ -30,7 +32,7 @@ function Dashboard({ entrevistadorId }) {
             <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
             <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
-            
+
             {/* 🔗 Cuadro de texto con el enlace */}
             <div style={{ marginTop: '20px' }}>
               <label>🔗 Enlace de InicioForm:</label>
