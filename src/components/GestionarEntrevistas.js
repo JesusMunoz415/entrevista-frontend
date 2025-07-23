@@ -37,7 +37,7 @@ const GestionarEntrevistas = ({ entrevistadorId }) => {
     }
 
     try {
-      const response = await fetch('https://entrevista-backend.onrender.com/api/inicioform', {
+      const response = await fetch('https://entrevista-backend.onrender.com/api/Inicioform', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
