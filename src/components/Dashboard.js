@@ -1,3 +1,5 @@
+// frontend/src/components/Dashboard.js
+
 import React, { useState } from 'react';
 import VerPostulantes from './VerPostulantes'; // ✅ Importa archivo externo
 import GestionarEntrevistas from './GestionarEntrevistas';
@@ -13,13 +15,30 @@ function Dashboard({ entrevistadorId }) {
     window.location.reload();
   };
 
+  const abrirEnNuevaPestana = () => {
+    window.open(enlace, '_blank');
+  };
+
   const renderContenido = () => {
     switch (vista) {
       case "entrevistas":
-        // ✅ Ahora carga InicioForm y redirige al registrar el postulante
-        return <InicioForm onContinue={(postulanteId) => {
-          window.location.href = `/entrevista/${postulanteId}`;
-        }} />;
+        return (
+          <div>
+            <p>🔗 Enlace abierto en una nueva pestaña:</p>
+            <input
+              type="text"
+              value={enlace}
+              readOnly
+              style={{
+                width: '100%',
+                padding: '8px',
+                marginTop: '5px',
+                border: '1px solid #ccc',
+                borderRadius: '4px'
+              }}
+            />
+          </div>
+        );
       case "postulantes":
         return <VerPostulantes />;
       case "historial":
@@ -58,7 +77,7 @@ function Dashboard({ entrevistadorId }) {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.sidebar}>
-          <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
+          <button onClick={() => { setVista("entrevistas"); abrirEnNuevaPestana(); }} style={styles.menuButton}>
             📁 Gestionar Entrevistas
           </button>
           <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
