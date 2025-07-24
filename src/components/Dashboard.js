@@ -1,21 +1,28 @@
 import React, { useState } from 'react';
-import VerPostulantes from './VerPostulantes';
+import VerPostulantes from './VerPostulantes'; // ✅ Importa archivo externo
 import GestionarEntrevistas from './GestionarEntrevistas';
-import InicioForm from './InicioForm';
+import InicioForm from './InicioForm'; // ✅ Importa InicioForm
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
   const [vista, setVista] = useState("home");
-  const [enlace] = useState('https://entrevista-frontend.onrender.com/inicioform');
+  const [enlace, setEnlace] = useState('https://entrevista-frontend.onrender.com/inicios.form');
 
   const handleCerrarSesion = () => {
     localStorage.clear();
     window.location.reload();
   };
 
-  const abrirNuevaPestana = () => {
-    window.open(enlace, '_blank');
-  };
+  // ✅ Mostrar InicioForm a pantalla completa
+  if (vista === "entrevistas") {
+    return (
+      <div style={{ height: '100vh', width: '100vw' }}>
+        <InicioForm onContinue={(postulanteId) => {
+          window.location.href = `/entrevista/${postulanteId}`;
+        }} />
+      </div>
+    );
+  }
 
   const renderContenido = () => {
     switch (vista) {
@@ -57,7 +64,7 @@ function Dashboard({ entrevistadorId }) {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.sidebar}>
-          <button onClick={abrirNuevaPestana} style={styles.menuButton}>
+          <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
             📁 Gestionar Entrevistas
           </button>
           <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
@@ -82,6 +89,7 @@ function Dashboard({ entrevistadorId }) {
   );
 }
 
+// ⚠️ Subcomponentes temporales (mover a archivos externos después)
 const VerHistorial = () => (
   <div>
     <h2>📜 Historial de Entrevistas</h2>
@@ -104,6 +112,12 @@ const styles = {
     height: '90vh',
     background: 'linear-gradient(135deg, #f8f9fa, #d9e4f5)',
     fontFamily: 'Arial, sans-serif'
+  },
+  title: {
+    position: 'absolute',
+    top: '20px',
+    fontSize: '2rem',
+    color: '#343a40'
   },
   card: {
     display: 'flex',
@@ -155,5 +169,9 @@ const styles = {
     color: '#6c757d'
   }
 };
+
+
+
+
 
 export default Dashboard;
