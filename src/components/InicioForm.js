@@ -1,10 +1,15 @@
 // frontend/src/components/InicioForm.js
 
-import React, { useState } from 'react';
+// frontend/src/components/InicioForm.js
 
-function InicioForm({ onContinue }) {
+import React, { useState } from 'react';
+import QuestionForm from './QuestionForm'; // ✅ Importar QuestionForm
+
+function InicioForm() {
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
+  const [entrevistaIniciada, setEntrevistaIniciada] = useState(false);
+  const [postulanteId, setPostulanteId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,7 +35,8 @@ function InicioForm({ onContinue }) {
       const data = await response.json();
 
       if (data.status === 'ok') {
-        onContinue(data.id);
+        setPostulanteId(data.id);              // ✅ Guardamos ID del postulante
+        setEntrevistaIniciada(true);           // ✅ Disparar redirección a preguntas
       } else {
         setError(data.mensaje || 'No se pudo registrar el postulante.');
       }
@@ -39,6 +45,11 @@ function InicioForm({ onContinue }) {
       setError('Error al conectar con el servidor.');
     }
   };
+
+  // ✅ Si ya inició, mostrar QuestionForm
+  if (entrevistaIniciada && postulanteId) {
+    return <QuestionForm entrevistaId={postulanteId} onSubmit={() => {}} />;
+  }
 
   return (
     <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
