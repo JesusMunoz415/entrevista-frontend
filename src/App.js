@@ -110,9 +110,9 @@ function App() {
             }
           />
 
-          {/* 👇 Ruta pública para postulantes con token */}
+          {/* ✅ Ruta directa para acceder a InicioForm */}
           <Route
-            path="/entrevista/:token"
+            path="/inicioform"
             element={<InicioForm onContinue={handleInicio} />}
           />
         </Routes>
