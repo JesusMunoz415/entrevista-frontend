@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import VerPostulantes from './VerPostulantes'; // ✅ Importa archivo externo
-import GestionarEntrevistas from './GestionarEntrevistas';
-import InicioForm from './InicioForm'; // ✅ Importa InicioForm
+import VerPostulantes from './VerPostulantes';
+import InicioForm from './InicioForm';
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
@@ -16,10 +15,12 @@ function Dashboard({ entrevistadorId }) {
   // ✅ Mostrar InicioForm a pantalla completa
   if (vista === "entrevistas") {
     return (
-      <div style={{ height: '100vh', width: '100vw' }}>
-        <InicioForm onContinue={(postulanteId) => {
-          window.location.href = `/entrevista/${postulanteId}`;
-        }} />
+      <div style={{ height: '100vh', width: '100vw', padding: 0, margin: 0 }}>
+        <InicioForm
+          onContinue={(postulanteId) => {
+            window.location.href = `/entrevista/${postulanteId}`;
+          }}
+        />
       </div>
     );
   }
@@ -39,7 +40,6 @@ function Dashboard({ entrevistadorId }) {
             <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
 
-            {/* 🔗 Cuadro de texto con el enlace */}
             <div style={{ marginTop: '20px' }}>
               <label>🔗 Enlace de InicioForm:</label>
               <input
@@ -113,12 +113,6 @@ const styles = {
     background: 'linear-gradient(135deg, #f8f9fa, #d9e4f5)',
     fontFamily: 'Arial, sans-serif'
   },
-  title: {
-    position: 'absolute',
-    top: '20px',
-    fontSize: '2rem',
-    color: '#343a40'
-  },
   card: {
     display: 'flex',
     width: '90%',
@@ -169,9 +163,5 @@ const styles = {
     color: '#6c757d'
   }
 };
-
-
-
-
 
 export default Dashboard;
