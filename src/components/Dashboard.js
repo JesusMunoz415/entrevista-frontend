@@ -7,7 +7,7 @@ import InicioForm from './InicioForm';
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
   const [vista, setVista] = useState("home");
-  const [enlace, setEnlace] = useState('https://entrevista-frontend.onrender.com/inicioform'); // ✅ Corregido aquí (.com/inicioform)
+  const [enlace, setEnlace] = useState(`${window.location.origin}/inicioform`); // ✅ Corregido aquí (.com/inicioform)
 
   const handleCerrarSesion = () => {
     localStorage.clear();
