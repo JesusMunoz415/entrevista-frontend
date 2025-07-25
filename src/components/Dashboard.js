@@ -1,3 +1,5 @@
+//frontend/src/components/Dashboard.js
+
 import React, { useState } from 'react';
 import VerPostulantes from './VerPostulantes';
 import InicioForm from './InicioForm';
@@ -5,7 +7,7 @@ import InicioForm from './InicioForm';
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
   const [vista, setVista] = useState("home");
-  const [enlace, setEnlace] = useState('https://entrevista-frontend.onrender.com/inicios.form');
+  const [enlace, setEnlace] = useState('https://entrevista-frontend.onrender.com/inicioform'); // ✅ Corregido aquí (.com/inicioform)
 
   const handleCerrarSesion = () => {
     localStorage.clear();
@@ -40,8 +42,9 @@ function Dashboard({ entrevistadorId }) {
             <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
 
+            {/* 🔗 Cuadro de texto con el enlace directo */}
             <div style={{ marginTop: '20px' }}>
-              <label>🔗 Enlace de InicioForm:</label>
+              <label>🔗 Enlace directo a InicioForm:</label>
               <input
                 type="text"
                 value={enlace}
