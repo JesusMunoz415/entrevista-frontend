@@ -112,9 +112,14 @@ function App() {
 
           {/* ✅ Ruta directa para acceder a InicioForm */}
           <Route
-            path="/inicioform"
-            element={<InicioForm onContinue={handleInicio} />}
-          />
+              path="/inicioform"
+              element={
+                <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+                  <h1>Formulario de Inicio</h1>
+                  <InicioForm onContinue={handleInicio} />
+                </div>
+              }
+            />
         </Routes>
       </div>
     </Router>
