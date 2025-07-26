@@ -1,36 +1,21 @@
-//frontend/src/components/Dashboard.js
-
 import React, { useState } from 'react';
-import VerPostulantes from './VerPostulantes';
-import InicioForm from './InicioForm';
+import VerPostulantes from './VerPostulantes'; // ✅ Importar el archivo externo
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
   const [vista, setVista] = useState("home");
-  const [enlace] = useState(`${window.location.origin}/inicioform`);
 
   const handleCerrarSesion = () => {
     localStorage.clear();
     window.location.reload();
   };
 
-  // ✅ Mostrar InicioForm a pantalla completa
-  if (vista === "entrevistas") {
-    return (
-      <div style={{ height: '100vh', width: '100vw', padding: 0, margin: 0 }}>
-        <InicioForm
-          onContinue={(postulanteId) => {
-            window.location.href = `/entrevista/${postulanteId}`;
-          }}
-        />
-      </div>
-    );
-  }
-
   const renderContenido = () => {
     switch (vista) {
+      case "entrevistas":
+        return <GestionarEntrevistas />;
       case "postulantes":
-        return <VerPostulantes />;
+        return <VerPostulantes />; // ✅ Llama al componente externo
       case "historial":
         return <VerHistorial />;
       case "configuracion":
@@ -41,29 +26,6 @@ function Dashboard({ entrevistadorId }) {
             <h2 style={styles.welcome}>👋 Bienvenido, <span style={styles.username}>{nombreEntrevistador}</span></h2>
             <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
-
-            {/* 🔗 Cuadro de texto con enlace clickeable */}
-            <div style={{ marginTop: '20px' }}>
-              <label>🔗 Enlace directo a InicioForm:</label>
-              <div style={{ marginTop: '5px' }}>
-                <a
-                  href="/inicioform"
-                  style={{
-                    display: 'inline-block',
-                    width: '100%',
-                    padding: '8px',
-                    backgroundColor: '#f8f9fa',
-                    border: '1px solid #ccc',
-                    borderRadius: '4px',
-                    color: '#007bff',
-                    textDecoration: 'none',
-                    overflowWrap: 'break-word'
-                  }}
-                >
-                  {enlace}
-                </a>
-              </div>
-            </div>
           </div>
         );
     }
@@ -71,6 +33,7 @@ function Dashboard({ entrevistadorId }) {
 
   return (
     <div style={styles.container}>
+
       <div style={styles.card}>
         <div style={styles.sidebar}>
           <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
@@ -98,7 +61,14 @@ function Dashboard({ entrevistadorId }) {
   );
 }
 
-// ⚠️ Subcomponentes temporales (mover a archivos externos después)
+// Subcomponentes de ejemplo
+const GestionarEntrevistas = () => (
+  <div>
+    <h2>📁 Gestión de Entrevistas</h2>
+    <p>Aquí podrás crear, editar y eliminar entrevistas.</p>
+  </div>
+);
+
 const VerHistorial = () => (
   <div>
     <h2>📜 Historial de Entrevistas</h2>
@@ -121,6 +91,12 @@ const styles = {
     height: '90vh',
     background: 'linear-gradient(135deg, #f8f9fa, #d9e4f5)',
     fontFamily: 'Arial, sans-serif'
+  },
+  title: {
+    position: 'absolute',
+    top: '20px',
+    fontSize: '2rem',
+    color: '#343a40'
   },
   card: {
     display: 'flex',
