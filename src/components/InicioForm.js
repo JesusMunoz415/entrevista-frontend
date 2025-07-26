@@ -1,9 +1,7 @@
-// frontend/src/components/InicioForm.js
-
-// frontend/src/components/InicioForm.js
+//frontend/src/components/InicioForm.js
 
 import React, { useState } from 'react';
-import QuestionForm from './QuestionForm'; // ✅ Importar QuestionForm
+import QuestionForm from './QuestionForm';
 
 function InicioForm() {
   const [nombrePostulante, setNombrePostulante] = useState('');
@@ -35,8 +33,8 @@ function InicioForm() {
       const data = await response.json();
 
       if (data.status === 'ok') {
-        setPostulanteId(data.id);              // ✅ Guardamos ID del postulante
-        setEntrevistaIniciada(true);           // ✅ Disparar redirección a preguntas
+        setPostulanteId(data.id);
+        setEntrevistaIniciada(true);
       } else {
         setError(data.mensaje || 'No se pudo registrar el postulante.');
       }
@@ -46,29 +44,54 @@ function InicioForm() {
     }
   };
 
-  // ✅ Si ya inició, mostrar QuestionForm
   if (entrevistaIniciada && postulanteId) {
     return <QuestionForm entrevistaId={postulanteId} onSubmit={() => {}} />;
   }
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
-      <h2>Inicio de entrevista</h2>
+    <div style={{
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100vh',
+      backgroundColor: '#fff'
+    }}>
+      <form onSubmit={handleSubmit} style={{
+        maxWidth: '400px',
+        width: '100%',
+        textAlign: 'center'
+      }}>
+        <h2 style={{ color: '#206341' }}>Inicio de entrevista</h2>
 
-      <label>Nombre del postulante:</label>
-      <input
-        type="text"
-        value={nombrePostulante}
-        onChange={(e) => setNombrePostulante(e.target.value)}
-        style={{ width: '100%' }}
-      />
+        <label style={{ display: 'block', marginBottom: '8px', fontSize: '16px' }}>Nombre del postulante:</label>
+        <input
+          type="text"
+          value={nombrePostulante}
+          onChange={(e) => setNombrePostulante(e.target.value)}
+          style={{
+            width: '100%',
+            padding: '8px',
+            borderRadius: '5px',
+            border: '1px solid #ccc',
+            marginBottom: '10px'
+          }}
+        />
 
-      {error && <p style={{ color: 'red' }}>{error}</p>}
+        {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
 
-      <button type="submit" style={{ marginTop: '10px' }}>
-        Comenzar entrevista
-      </button>
-    </form>
+        <button type="submit" style={{
+          padding: '10px 20px',
+          backgroundColor: '#3498db',
+          color: '#fff',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          fontSize: '16px'
+        }}>
+          Comenzar entrevista
+        </button>
+      </form>
+    </div>
   );
 }
 
