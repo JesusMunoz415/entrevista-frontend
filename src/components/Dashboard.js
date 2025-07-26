@@ -7,7 +7,7 @@ import InicioForm from './InicioForm';
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
   const [vista, setVista] = useState("home");
-  const [enlace, setEnlace] = useState(`${window.location.origin}/inicioform`); // ✅ Corregido aquí (.com/inicioform)
+  const [enlace] = useState(`${window.location.origin}/inicioform`);
 
   const handleCerrarSesion = () => {
     localStorage.clear();
@@ -42,21 +42,27 @@ function Dashboard({ entrevistadorId }) {
             <p style={styles.subtext}>ID de entrevistador: <strong>{entrevistadorId}</strong></p>
             <p style={{ marginTop: '20px', color: '#6c757d' }}>Selecciona una opción del menú para comenzar.</p>
 
-            {/* 🔗 Cuadro de texto con el enlace directo */}
+            {/* 🔗 Cuadro de texto con enlace clickeable */}
             <div style={{ marginTop: '20px' }}>
               <label>🔗 Enlace directo a InicioForm:</label>
-              <input
-                type="text"
-                value={enlace}
-                readOnly
-                style={{
-                  width: '100%',
-                  padding: '8px',
-                  marginTop: '5px',
-                  border: '1px solid #ccc',
-                  borderRadius: '4px'
-                }}
-              />
+              <div style={{ marginTop: '5px' }}>
+                <a
+                  href="/inicioform"
+                  style={{
+                    display: 'inline-block',
+                    width: '100%',
+                    padding: '8px',
+                    backgroundColor: '#f8f9fa',
+                    border: '1px solid #ccc',
+                    borderRadius: '4px',
+                    color: '#007bff',
+                    textDecoration: 'none',
+                    overflowWrap: 'break-word'
+                  }}
+                >
+                  {enlace}
+                </a>
+              </div>
             </div>
           </div>
         );
