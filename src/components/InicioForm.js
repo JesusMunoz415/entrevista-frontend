@@ -61,7 +61,7 @@ function InicioForm() {
         width: '100%',
         textAlign: 'center'
       }}>
-        <h2 style={{ color: '#206341' }}>Inicio de entrevista</h2>
+        <h2 style={{ color: '#206341', marginBottom: '20px' }}>Inicio de entrevista</h2>
 
         <label style={{ display: 'block', marginBottom: '8px', fontSize: '16px' }}>Nombre del postulante:</label>
         <input
@@ -70,10 +70,11 @@ function InicioForm() {
           onChange={(e) => setNombrePostulante(e.target.value)}
           style={{
             width: '100%',
-            padding: '8px',
+            padding: '10px',
             borderRadius: '5px',
             border: '1px solid #ccc',
-            marginBottom: '10px'
+            marginBottom: '10px',
+            fontSize: '16px'
           }}
         />
 
@@ -86,7 +87,8 @@ function InicioForm() {
           border: 'none',
           borderRadius: '5px',
           cursor: 'pointer',
-          fontSize: '16px'
+          fontSize: '16px',
+          width: '100%'
         }}>
           Comenzar entrevista
         </button>
