@@ -110,16 +110,17 @@ function App() {
             }
           />
 
-          {/* ✅ Ruta directa para acceder a InicioForm */}
+          {/* ✅ Ruta directa para acceder a InicioForm sin depender del estado pantalla */}
           <Route
-              path="/inicioform"
-              element={
-                <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-                  <h1>Formulario de Inicio</h1>
-                  <InicioForm onContinue={handleInicio} />
-                </div>
-              }
-            />
+            path="/inicioform"
+            element={
+              <InicioForm
+                onContinue={(postulanteId) => {
+                  window.location.href = `/entrevista/${postulanteId}`;
+                }}
+              />
+            }
+          />
         </Routes>
       </div>
     </Router>
