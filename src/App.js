@@ -69,58 +69,34 @@ function App() {
         )}
 
         <Routes>
-          <Route
-            path="/"
-            element={
-              <>
-                {pantalla === "login" && (
-                  <LoginForm onLoginExitoso={handleLogin} setPantalla={setPantalla} />
-                )}
-
-                {pantalla === "registro" && (
-                  <RegistroEntrevistador onVolver={() => setPantalla("login")} />
-                )}
-
-                {pantalla === "dashboard" && (
-                  <Dashboard entrevistadorId={entrevistadorId} />
-                )}
-
-                {pantalla === "formulario" && (
-                  <QuestionForm
-                    onSubmit={handleFormSubmit}
-                    entrevistadorId={entrevistadorId}
-                    postulanteId={postulanteId}
-                  />
-                )}
-
-                {pantalla === "resultado" && (
-                  <Result
-                    analysis={analysis}
-                    answers={answers}
-                    onBack={handleBack}
-                    entrevistadorId={entrevistadorId}
-                    postulanteId={postulanteId}
-                  />
-                )}
-
-                {pantalla === "historial" && (
-                  <Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("dashboard")} />
-                )}
-              </>
-            }
-          />
-
-          {/* ✅ Ruta directa para acceder a InicioForm sin depender del estado pantalla */}
-          <Route
-            path="/inicioform"
-            element={
-              <InicioForm
-                onContinue={(postulanteId) => {
-                  window.location.href = `/entrevista/${postulanteId}`;
-                }}
-              />
-            }
-          />
+          <Route path="/" element={<LoginForm onLoginExitoso={handleLogin} setPantalla={setPantalla} />} />
+          <Route path="/registro" element={<RegistroEntrevistador onVolver={() => setPantalla("login")} />} />
+          <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
+          <Route path="/entrevista/:postulanteId" element={
+            <QuestionForm
+              onSubmit={handleFormSubmit}
+              entrevistadorId={entrevistadorId}
+              postulanteId={postulanteId}
+            />
+          } />
+          <Route path="/resultado" element={
+            <Result
+              analysis={analysis}
+              answers={answers}
+              onBack={handleBack}
+              entrevistadorId={entrevistadorId}
+              postulanteId={postulanteId}
+            />
+          } />
+          <Route path="/historial" element={
+            <Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("dashboard")} />
+          } />
+          <Route path="/inicioform" element={
+            <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+              <h1>Formulario de Inicio</h1>
+              <InicioForm onContinue={handleInicio} />
+            </div>
+          } />
         </Routes>
       </div>
     </Router>
