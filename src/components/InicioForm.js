@@ -1,13 +1,9 @@
-//frontend/src/components/InicioForm.js
-
+// frontend/src/components/InicioForm.js
 import React, { useState } from 'react';
-import QuestionForm from './QuestionForm';
 
-function InicioForm() {
+function InicioForm({ onContinue, entrevistadorId }) {
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
-  const [entrevistaIniciada, setEntrevistaIniciada] = useState(false);
-  const [postulanteId, setPostulanteId] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,22 +15,22 @@ function InicioForm() {
     }
 
     try {
-      const response = await fetch(`https://entrevista-backend.onrender.com/api/postulantes`, {
+          const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: nombrePostulante,
-          correo: '',
+          correo: '',          // enviar aunque sea vacío
           telefono: ''
         }),
         credentials: 'include'
       });
 
+
       const data = await response.json();
 
       if (data.status === 'ok') {
-        setPostulanteId(data.id);
-        setEntrevistaIniciada(true);
+        onContinue(data.id);
       } else {
         setError(data.mensaje || 'No se pudo registrar el postulante.');
       }
@@ -44,56 +40,25 @@ function InicioForm() {
     }
   };
 
-  if (entrevistaIniciada && postulanteId) {
-    return <QuestionForm entrevistaId={postulanteId} onSubmit={() => {}} />;
-  }
-
   return (
-    <div style={{
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      height: '100vh',
-      backgroundColor: '#fff'
-    }}>
-      <form onSubmit={handleSubmit} style={{
-        maxWidth: '400px',
-        width: '100%',
-        textAlign: 'center'
-      }}>
-        <h2 style={{ color: '#206341', marginBottom: '20px' }}>Inicio de entrevista</h2>
+    <form onSubmit={handleSubmit} style={{ maxWidth: '400px', margin: '0 auto' }}>
+      <h2>Inicio de entrevista</h2>
+      <p><strong>Entrevistador ID:</strong> {entrevistadorId}</p>
 
-        <label style={{ display: 'block', marginBottom: '8px', fontSize: '16px' }}>Nombre del postulante:</label>
-        <input
-          type="text"
-          value={nombrePostulante}
-          onChange={(e) => setNombrePostulante(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '10px',
-            borderRadius: '5px',
-            border: '1px solid #ccc',
-            marginBottom: '10px',
-            fontSize: '16px'
-          }}
-        />
+      <label>Nombre del postulante:</label>
+      <input
+        type="text"
+        value={nombrePostulante}
+        onChange={(e) => setNombrePostulante(e.target.value)}
+        style={{ width: '100%' }}
+      />
 
-        {error && <p style={{ color: 'red', marginBottom: '10px' }}>{error}</p>}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
 
-        <button type="submit" style={{
-          padding: '10px 20px',
-          backgroundColor: '#3498db',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          fontSize: '16px',
-          width: '100%'
-        }}>
-          Comenzar entrevista
-        </button>
-      </form>
-    </div>
+      <button type="submit" style={{ marginTop: '10px' }}>
+        Comenzar entrevista
+      </button>
+    </form>
   );
 }
 
