@@ -1,5 +1,7 @@
+// frontend/src/App.js
+
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
 import InicioForm from './components/InicioForm';
@@ -15,94 +17,116 @@ function App() {
   const [analysis, setAnalysis] = useState('');
   const [answers, setAnswers] = useState([]);
 
-  const navigate = useNavigate(); // ✅ Redirección
-
   const handleLogin = (id, nombre) => {
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
-    navigate('/dashboard'); // ✅ Al dashboard
+    window.location.href = '/dashboard';
   };
 
   const handleInicio = (postId) => {
     setPostulanteId(postId);
-    navigate(`/entrevista/${postId}`);
+    window.location.href = `/entrevista/${postId}`;
   };
 
   const handleFormSubmit = (result, respuestasUsuario) => {
     setAnalysis(result);
     setAnswers(respuestasUsuario);
-    navigate('/resultado');
+    window.location.href = '/resultado';
   };
 
   const handleBack = () => {
     setAnalysis('');
     setAnswers([]);
     setPostulanteId(null);
-    navigate('/dashboard');
+    window.location.href = '/dashboard';
   };
 
-  const cerrarSesion = () => {
-    localStorage.clear();
-    setEntrevistadorId(null);
-    setNombreEntrevistador('');
-    setPostulanteId(null);
-    navigate('/');
-  };
-
-  return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <h1>Entrevista Inteligente RH</h1>
-
-      {entrevistadorId && (
-        <div style={{ textAlign: 'right', marginBottom: '10px' }}>
-          <p><strong>Sesión:</strong> {nombreEntrevistador}</p>
-          <button onClick={cerrarSesion} style={{ padding: '6px 12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '6px' }}>
-            Cerrar sesión
-          </button>
-          <button onClick={() => navigate('/historial')} style={{ marginLeft: '10px', padding: '6px 12px' }}>
-            Ver historial
-          </button>
-        </div>
-      )}
-
-      <Routes>
-        <Route path="/" element={<LoginForm onLoginExitoso={handleLogin} />} />
-        <Route path="/registro" element={<RegistroEntrevistador />} />
-        <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
-        <Route path="/entrevista/:postulanteId" element={
-          <QuestionForm
-            onSubmit={handleFormSubmit}
-            entrevistadorId={entrevistadorId}
-            postulanteId={postulanteId}
-          />
-        } />
-        <Route path="/resultado" element={
-          <Result
-            analysis={analysis}
-            answers={answers}
-            onBack={handleBack}
-            entrevistadorId={entrevistadorId}
-            postulanteId={postulanteId}
-          />
-        } />
-        <Route path="/historial" element={
-          <Historial entrevistadorId={entrevistadorId} />
-        } />
-        <Route path="/inicioform" element={
-          <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-            <h1>Formulario de Inicio</h1>
-            <InicioForm onContinue={handleInicio} />
-          </div>
-        } />
-      </Routes>
-    </div>
-  );
-}
-
-export default function AppWrapper() {
   return (
     <Router>
-      <App />
+      <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+        <h1>Entrevista Inteligente RH</h1>
+
+        {entrevistadorId && (
+          <div style={{ textAlign: 'right', marginBottom: '10px' }}>
+            <p><strong>Sesión:</strong> {nombreEntrevistador}</p>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                setEntrevistadorId(null);
+                setNombreEntrevistador('');
+                setPostulanteId(null);
+                window.location.href = '/';
+              }}
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px'
+              }}
+            >
+              Cerrar sesión
+            </button>
+          </div>
+        )}
+
+        <Routes>
+          <Route
+            path="/"
+            element={<LoginForm onLoginExitoso={handleLogin} />}
+          />
+          <Route
+            path="/registro"
+            element={<RegistroEntrevistador onVolver={() => (window.location.href = '/')} />}
+          />
+          <Route
+            path="/dashboard"
+            element={<Dashboard entrevistadorId={entrevistadorId} />}
+          />
+          <Route
+            path="/inicioform"
+            element={
+              <div>
+                <h2>Formulario de Inicio</h2>
+                <InicioForm onContinue={handleInicio} />
+              </div>
+            }
+          />
+          <Route
+            path="/entrevista/:postulanteId"
+            element={
+              <QuestionForm
+                onSubmit={handleFormSubmit}
+                entrevistadorId={entrevistadorId}
+                postulanteId={postulanteId}
+              />
+            }
+          />
+          <Route
+            path="/resultado"
+            element={
+              <Result
+                analysis={analysis}
+                answers={answers}
+                onBack={handleBack}
+                entrevistadorId={entrevistadorId}
+                postulanteId={postulanteId}
+              />
+            }
+          />
+          <Route
+            path="/historial"
+            element={
+              <Historial
+                entrevistadorId={entrevistadorId}
+                onVolver={() => (window.location.href = '/dashboard')}
+              />
+            }
+          />
+        </Routes>
+      </div>
     </Router>
   );
 }
+
+export default App;
