@@ -1,3 +1,5 @@
+// frontend/src/components/Dashboard.js
+
 import React, { useState } from 'react';
 import VerPostulantes from './VerPostulantes'; // ✅ Importar el archivo externo
 
@@ -12,10 +14,8 @@ function Dashboard({ entrevistadorId }) {
 
   const renderContenido = () => {
     switch (vista) {
-      case "entrevistas":
-        return <GestionarEntrevistas />;
       case "postulantes":
-        return <VerPostulantes />; // ✅ Llama al componente externo
+        return <VerPostulantes />;
       case "historial":
         return <VerHistorial />;
       case "configuracion":
@@ -33,10 +33,9 @@ function Dashboard({ entrevistadorId }) {
 
   return (
     <div style={styles.container}>
-
       <div style={styles.card}>
         <div style={styles.sidebar}>
-          <button onClick={() => setVista("entrevistas")} style={styles.menuButton}>
+          <button onClick={() => window.location.href = '/inicioform'} style={styles.menuButton}>
             📁 Gestionar Entrevistas
           </button>
           <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
@@ -62,13 +61,6 @@ function Dashboard({ entrevistadorId }) {
 }
 
 // Subcomponentes de ejemplo
-const GestionarEntrevistas = () => (
-  <div>
-    <h2>📁 Gestión de Entrevistas</h2>
-    <p>Aquí podrás crear, editar y eliminar entrevistas.</p>
-  </div>
-);
-
 const VerHistorial = () => (
   <div>
     <h2>📜 Historial de Entrevistas</h2>
