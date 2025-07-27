@@ -15,7 +15,7 @@ function Dashboard({ entrevistadorId }) {
   const renderContenido = () => {
     switch (vista) {
       case "postulantes":
-        return <VerPostulantes />;
+        return <VerPostulantes />; // ✅ Llama al componente externo
       case "historial":
         return <VerHistorial />;
       case "configuracion":
@@ -35,7 +35,7 @@ function Dashboard({ entrevistadorId }) {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.sidebar}>
-          <button onClick={() => window.location.href = '/inicioform'} style={styles.menuButton}>
+          <button onClick={() => window.location.href = "/inicioform"} style={styles.menuButton}>
             📁 Gestionar Entrevistas
           </button>
           <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
