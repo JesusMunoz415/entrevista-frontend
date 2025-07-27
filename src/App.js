@@ -1,16 +1,16 @@
 // frontend/src/App.js
 
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
 import InicioForm from './components/InicioForm';
 import QuestionForm from './components/QuestionForm';
 import Result from './components/Result';
 import Historial from './components/Historial';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/Dashboard'; // 👈 nuevo import
 
 function App() {
+  const [pantalla, setPantalla] = useState("login");
   const [entrevistadorId, setEntrevistadorId] = useState(null);
   const [nombreEntrevistador, setNombreEntrevistador] = useState('');
   const [postulanteId, setPostulanteId] = useState(null);
@@ -20,117 +20,85 @@ function App() {
   const handleLogin = (id, nombre) => {
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
-    window.location.href = '/dashboard';
+    setPantalla("dashboard"); // 👈 Redirige al Dashboard
   };
 
   const handleInicio = (postId) => {
     setPostulanteId(postId);
-    window.location.href = `/entrevista/${postId}`;
+    setPantalla("formulario");
   };
 
   const handleFormSubmit = (result, respuestasUsuario) => {
     setAnalysis(result);
     setAnswers(respuestasUsuario);
-    window.location.href = '/resultado';
+    setPantalla("resultado");
   };
 
   const handleBack = () => {
     setAnalysis('');
     setAnswers([]);
     setPostulanteId(null);
-    window.location.href = '/dashboard';
+    setPantalla("dashboard"); // 👈 Regresa al Dashboard en vez de InicioForm
+  };
+
+  const cerrarSesion = () => {
+    localStorage.clear();
+    setEntrevistadorId(null);
+    setNombreEntrevistador('');
+    setPostulanteId(null);
+    setPantalla("login");
   };
 
   return (
-    <Router>
-      <Routes>
-        {/* RUTA ESPECIAL: InicioForm con pantalla completa y sin layout */}
-        <Route
-          path="/inicioform"
-          element={<InicioForm onContinue={handleInicio} />}
+    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
+      <h1>Entrevista Inteligente RH</h1>
+
+      {entrevistadorId && (
+        <div style={{ textAlign: 'right', marginBottom: '10px' }}>
+          <p><strong>Sesión:</strong> {nombreEntrevistador}</p>
+          <button onClick={cerrarSesion} style={{ padding: '6px 12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '6px' }}>
+            Cerrar sesión
+          </button>
+          <button onClick={() => setPantalla("historial")} style={{ marginLeft: '10px', padding: '6px 12px' }}>
+            Ver historial
+          </button>
+        </div>
+      )}
+
+      {pantalla === "login" && (
+        <LoginForm onLoginExitoso={handleLogin} setPantalla={setPantalla} />
+      )}
+
+      {pantalla === "registro" && (
+        <RegistroEntrevistador onVolver={() => setPantalla("login")} />
+      )}
+
+      {pantalla === "dashboard" && (
+        <Dashboard entrevistadorId={entrevistadorId} />
+      )}
+
+      {pantalla === "formulario" && (
+        <QuestionForm
+          onSubmit={handleFormSubmit}
+          entrevistadorId={entrevistadorId}
+          postulanteId={postulanteId}
         />
+      )}
 
-        {/* DEMÁS RUTAS: con layout normal */}
-        <Route
-          path="*"
-          element={
-            <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-              <h1>Entrevista Inteligente RH</h1>
-
-              {entrevistadorId && (
-                <div style={{ textAlign: 'right', marginBottom: '10px' }}>
-                  <p><strong>Sesión:</strong> {nombreEntrevistador}</p>
-                  <button
-                    onClick={() => {
-                      localStorage.clear();
-                      setEntrevistadorId(null);
-                      setNombreEntrevistador('');
-                      setPostulanteId(null);
-                      window.location.href = '/';
-                    }}
-                    style={{
-                      padding: '6px 12px',
-                      backgroundColor: '#dc3545',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '6px'
-                    }}
-                  >
-                    Cerrar sesión
-                  </button>
-                </div>
-              )}
-
-              <Routes>
-                <Route
-                  path="/"
-                  element={<LoginForm onLoginExitoso={handleLogin} />}
-                />
-                <Route
-                  path="/registro"
-                  element={<RegistroEntrevistador onVolver={() => (window.location.href = '/')} />}
-                />
-                <Route
-                  path="/dashboard"
-                  element={<Dashboard entrevistadorId={entrevistadorId} />}
-                />
-                <Route
-                  path="/entrevista/:postulanteId"
-                  element={
-                    <QuestionForm
-                      onSubmit={handleFormSubmit}
-                      entrevistadorId={entrevistadorId}
-                      postulanteId={postulanteId}
-                    />
-                  }
-                />
-                <Route
-                  path="/resultado"
-                  element={
-                    <Result
-                      analysis={analysis}
-                      answers={answers}
-                      onBack={handleBack}
-                      entrevistadorId={entrevistadorId}
-                      postulanteId={postulanteId}
-                    />
-                  }
-                />
-                <Route
-                  path="/historial"
-                  element={
-                    <Historial
-                      entrevistadorId={entrevistadorId}
-                      onVolver={() => (window.location.href = '/dashboard')}
-                    />
-                  }
-                />
-              </Routes>
-            </div>
-          }
+      {pantalla === "resultado" && (
+        <Result
+          analysis={analysis}
+          answers={answers}
+          onBack={handleBack}
+          entrevistadorId={entrevistadorId}
+          postulanteId={postulanteId}
         />
-      </Routes>
-    </Router>
+      )}
+
+      {pantalla === "historial" && (
+        <Historial entrevistadorId={entrevistadorId} onVolver={() => setPantalla("dashboard")} />
+      )}
+    </div>
   );
 }
 
