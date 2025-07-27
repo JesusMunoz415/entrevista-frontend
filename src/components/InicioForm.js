@@ -1,12 +1,13 @@
 // frontend/src/components/InicioForm.js
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom'; // ✅ importaciones necesarias
 
-function InicioForm({ onContinue }) {
+function InicioForm() {
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
 
   const location = useLocation();
+  const navigate = useNavigate(); // ✅ para redireccionar
   const params = new URLSearchParams(location.search);
   const entrevistadorId = params.get('entrevistadorId');
 
@@ -34,7 +35,7 @@ function InicioForm({ onContinue }) {
       const data = await response.json();
 
       if (data.status === 'ok') {
-        onContinue(data.id);
+        navigate(`/entrevista/${data.id}?entrevistadorId=${entrevistadorId}`); // ✅ redirección con parámetros
       } else {
         setError(data.mensaje || 'No se pudo registrar el postulante.');
       }

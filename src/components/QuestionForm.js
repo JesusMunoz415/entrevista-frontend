@@ -1,6 +1,7 @@
 // frontend/src/components/QuestionForm.js
 
 import React, { useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom'; // ✅ Importar para obtener parámetros de la URL
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -24,7 +25,12 @@ const palabrasClave = [
   ["frameworks", "trabajado", "desarrolló"]
 ];
 
-function QuestionForm({ onSubmit, entrevistaId }) {
+function QuestionForm({ onSubmit }) {
+  const { postulanteId } = useParams(); // ✅ Obtenemos el id desde la ruta
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const entrevistadorId = params.get("entrevistadorId");
+
   const [answers, setAnswers] = useState(Array(8).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -75,11 +81,9 @@ function QuestionForm({ onSubmit, entrevistaId }) {
       await new Promise(resolve => setTimeout(resolve, 800));
       const result = evaluarRespuestas(answers);
 
-      // 👇 Llama a onSubmit para flujo actual
       onSubmit(result, answers);
 
-      // 🚀 Actualiza estado de entrevista en el backend
-      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${entrevistaId}`, {
+      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${postulanteId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ estado: 'completada' })
