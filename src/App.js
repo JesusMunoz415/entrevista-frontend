@@ -1,6 +1,6 @@
 // frontend/src/App.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // ✅ Añadir esto
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
@@ -11,25 +11,15 @@ import Historial from './components/Historial';
 import Dashboard from './components/Dashboard';
 
 function App() {
-  const [entrevistadorId, setEntrevistadorId] = useState(null);
-  const [nombreEntrevistador, setNombreEntrevistador] = useState('');
+  const [entrevistadorId, setEntrevistadorId] = useState(() => localStorage.getItem("entrevistadorId"));
+  const [nombreEntrevistador, setNombreEntrevistador] = useState(() => localStorage.getItem("nombreEntrevistador"));
   const [postulanteId, setPostulanteId] = useState(null);
   const [analysis, setAnalysis] = useState('');
   const [answers, setAnswers] = useState([]);
 
-  // ✅ Recuperar datos del entrevistador si existen en localStorage
-  useEffect(() => {
-    const id = localStorage.getItem('entrevistadorId');
-    const nombre = localStorage.getItem('nombreEntrevistador');
-    if (id && nombre) {
-      setEntrevistadorId(id);
-      setNombreEntrevistador(nombre);
-    }
-  }, []);
-
   const handleLogin = (id, nombre) => {
-    localStorage.setItem('entrevistadorId', id); // ✅ Guardar en localStorage
-    localStorage.setItem('nombreEntrevistador', nombre);
+    localStorage.setItem("entrevistadorId", id);
+    localStorage.setItem("nombreEntrevistador", nombre);
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
     window.location.href = "/dashboard";
