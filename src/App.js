@@ -1,7 +1,7 @@
 // frontend/src/App.js
 
 import React, { useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // ✅ Añadir esto
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
 import InicioForm from './components/InicioForm';
@@ -20,6 +20,7 @@ function App() {
   const handleLogin = (id, nombre) => {
     setEntrevistadorId(id);
     setNombreEntrevistador(nombre);
+    window.location.href = "/dashboard";
   };
 
   const handleInicio = (postId) => {
@@ -30,22 +31,14 @@ function App() {
   const handleFormSubmit = (result, respuestasUsuario) => {
     setAnalysis(result);
     setAnswers(respuestasUsuario);
-    window.location.href = '/resultado';
+    window.location.href = "/resultado";
   };
 
   const handleBack = () => {
     setAnalysis('');
     setAnswers([]);
     setPostulanteId(null);
-    window.location.href = '/dashboard';
-  };
-
-  const cerrarSesion = () => {
-    localStorage.clear();
-    setEntrevistadorId(null);
-    setNombreEntrevistador('');
-    setPostulanteId(null);
-    window.location.href = '/';
+    window.location.href = "/dashboard";
   };
 
   return (
@@ -56,7 +49,16 @@ function App() {
         {entrevistadorId && (
           <div style={{ textAlign: 'right', marginBottom: '10px' }}>
             <p><strong>Sesión:</strong> {nombreEntrevistador}</p>
-            <button onClick={cerrarSesion} style={{ padding: '6px 12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '6px' }}>
+            <button
+              onClick={() => {
+                localStorage.clear();
+                setEntrevistadorId(null);
+                setNombreEntrevistador('');
+                setPostulanteId(null);
+                window.location.href = '/';
+              }}
+              style={{ padding: '6px 12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '6px' }}
+            >
               Cerrar sesión
             </button>
           </div>
@@ -64,13 +66,12 @@ function App() {
 
         <Routes>
           <Route path="/" element={<LoginForm onLoginExitoso={handleLogin} />} />
-          <Route path="/registro" element={<RegistroEntrevistador />} />
+          <Route path="/registro" element={<RegistroEntrevistador onVolver={() => window.location.href = '/'} />} />
           <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
           <Route path="/inicioform" element={<InicioForm onContinue={handleInicio} entrevistadorId={entrevistadorId} />} />
           <Route path="/entrevista/:postulanteId" element={<QuestionForm onSubmit={handleFormSubmit} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
           <Route path="/resultado" element={<Result analysis={analysis} answers={answers} onBack={handleBack} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
-          <Route path="/historial" element={<Historial entrevistadorId={entrevistadorId} />} />
-          <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/historial" element={<Historial entrevistadorId={entrevistadorId} onVolver={() => window.location.href = '/dashboard'} />} />
         </Routes>
       </div>
     </Router>
