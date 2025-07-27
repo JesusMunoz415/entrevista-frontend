@@ -1,7 +1,5 @@
-// frontend/src/components/Result.js
-
-import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // ✅ Para recuperar los datos enviados por navigate
+import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -14,13 +12,60 @@ const questions = [
   "¿Tienes experiencia previa relacionada con este tipo de trabajo?"
 ];
 
+const palabrasClave = [
+  ["desarrollador", "tecnologías", "compromiso"],
+  ["motivación", "creciendo", "aprendiendo"],
+  ["logro", "liderar", "gestión", "proyecto"],
+  ["presión", "calma", "priorizar", "planificación"],
+  ["colaboración", "equipo", "soluciones"],
+  ["objetivo", "liderazgo", "creciendo"],
+  ["responsabilidad", "experiencia", "adapto", "confiable"],
+  ["frameworks", "trabajado", "desarrolló"]
+];
+
 function Result() {
   const location = useLocation();
-  const navigate = useNavigate();
-  const { analysis, answers, entrevistadorId, postulanteId, entrevistaId } = location.state || {};
+  const {
+    answers = [],
+    entrevistadorId,
+    postulanteId,
+    entrevistaId
+  } = location.state || {};
 
+  const [analysis, setAnalysis] = useState('');
   const [manualScores, setManualScores] = useState(Array(8).fill(0));
   const [enviado, setEnviado] = useState(false);
+
+  useEffect(() => {
+    const evaluarRespuestas = (answers) => {
+      const puntuaciones = answers.map((respuesta, i) => {
+        let score = 0;
+        const texto = respuesta.toLowerCase();
+
+        if (respuesta.trim().length > 50) score += 1;
+        if (palabrasClave[i].some(palabra => texto.includes(palabra))) score += 1;
+
+        return { pregunta: i + 1, texto: respuesta, puntaje: score };
+      });
+
+      const total = puntuaciones.reduce((acc, p) => acc + p.puntaje, 0);
+      const resultadoFinal = total >= 12
+        ? "✅ APTO para la siguiente fase."
+        : "⚠️ Se recomienda una revisión más detallada.";
+
+      let informe = "📊 Evaluación automática:\n\n";
+      puntuaciones.forEach(p => {
+        informe += `Pregunta ${p.pregunta}: ${p.puntaje}/2\n`;
+      });
+      informe += `\n➡️ Resultado final: ${resultadoFinal}`;
+      return informe;
+    };
+
+    if (answers.length === 8) {
+      const resultado = evaluarRespuestas(answers);
+      setAnalysis(resultado);
+    }
+  }, [answers]);
 
   const total = manualScores.reduce((a, b) => a + b, 0);
   const resultadoFinal = total >= 12
@@ -33,14 +78,10 @@ function Result() {
     setManualScores(newScores);
   };
 
-  const extractEvalDePregunta = (analysisText, preguntaId) => {
-    return analysisText || "Sin análisis"; // 👈 Valor por defecto
-  };
-
   const guardarEnBase = async () => {
     const respuestasEvaluadas = questions.map((q, i) => ({
       pregunta_id: i + 1,
-      texto: answers?.[i] || "",
+      texto: answers[i] || "",
       evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "",
       puntaje_manual: manualScores[i],
       comentario_manual: "",
@@ -52,14 +93,10 @@ function Result() {
       respuestas: respuestasEvaluadas
     };
 
-    console.log("✅ Datos enviados al backend:", JSON.stringify(datos, null, 2));
-
     try {
       const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos),
       });
 
@@ -78,8 +115,10 @@ function Result() {
     }
   };
 
-  const volver = () => {
-    navigate(-1); // 👈 Regresa a la página anterior
+  const extractEvalDePregunta = (analysisText, preguntaId) => {
+    const regex = new RegExp(`Pregunta ${preguntaId}: (\\d+/2)`);
+    const match = analysisText.match(regex);
+    return match ? match[0] : "Sin análisis";
   };
 
   return (
@@ -97,7 +136,7 @@ function Result() {
         <div key={i} style={{ marginBottom: '20px' }}>
           <strong>{q}</strong>
           <div style={{ backgroundColor: '#eee', padding: '10px' }}>
-            {answers?.[i]}
+            {answers[i]}
           </div>
           <label>Puntuación (0-2): </label>
           <select
@@ -119,10 +158,6 @@ function Result() {
           Guardar evaluación
         </button>
       )}
-
-      <button onClick={volver} style={{ marginTop: '10px', marginLeft: '10px' }}>
-        Volver
-      </button>
     </div>
   );
 }

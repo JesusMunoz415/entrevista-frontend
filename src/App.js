@@ -83,7 +83,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
           <Route path="/inicioform" element={<InicioForm onContinue={handleInicio} entrevistadorId={entrevistadorId} />} />
           <Route path="/entrevista/:postulanteId" element={<QuestionForm onSubmit={handleFormSubmit} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
-          <Route path="/resultado" element={<Result analysis={analysis} answers={answers} onBack={handleBack} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
+          <Route path="/resultado" element={<Result onBack={handleBack} />} />
           <Route path="/historial" element={<Historial entrevistadorId={entrevistadorId} onVolver={() => window.location.href = '/dashboard'} />} />
         </Routes>
       </div>
