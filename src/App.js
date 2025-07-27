@@ -1,6 +1,6 @@
 // frontend/src/App.js
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // ✅ Añadir esto
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
@@ -11,11 +11,22 @@ import Historial from './components/Historial';
 import Dashboard from './components/Dashboard';
 
 function App() {
-  const [entrevistadorId, setEntrevistadorId] = useState(() => localStorage.getItem("entrevistadorId"));
-  const [nombreEntrevistador, setNombreEntrevistador] = useState(() => localStorage.getItem("nombreEntrevistador"));
+  const [entrevistadorId, setEntrevistadorId] = useState(null);
+  const [nombreEntrevistador, setNombreEntrevistador] = useState('');
   const [postulanteId, setPostulanteId] = useState(null);
   const [analysis, setAnalysis] = useState('');
   const [answers, setAnswers] = useState([]);
+
+  // ✅ Cargar sesión desde localStorage en recarga de página
+  useEffect(() => {
+    const id = localStorage.getItem("entrevistadorId");
+    const nombre = localStorage.getItem("nombreEntrevistador");
+
+    if (id && nombre) {
+      setEntrevistadorId(id);
+      setNombreEntrevistador(nombre);
+    }
+  }, []);
 
   const handleLogin = (id, nombre) => {
     localStorage.setItem("entrevistadorId", id);
