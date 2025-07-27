@@ -1,6 +1,7 @@
 // frontend/src/components/Result.js
 
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom'; // ✅ Para recuperar los datos enviados por navigate
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -13,7 +14,11 @@ const questions = [
   "¿Tienes experiencia previa relacionada con este tipo de trabajo?"
 ];
 
-function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entrevistaId }) {
+function Result() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { analysis, answers, entrevistadorId, postulanteId, entrevistaId } = location.state || {};
+
   const [manualScores, setManualScores] = useState(Array(8).fill(0));
   const [enviado, setEnviado] = useState(false);
 
@@ -28,22 +33,27 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
     setManualScores(newScores);
   };
 
+  const extractEvalDePregunta = (analysisText, preguntaId) => {
+    return analysisText || "Sin análisis"; // 👈 Valor por defecto
+  };
+
   const guardarEnBase = async () => {
     const respuestasEvaluadas = questions.map((q, i) => ({
-  pregunta_id: i + 1,
-  texto: answers[i] || "",
-  evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "",
-  puntaje_manual: manualScores[i],
-  comentario_manual: "",
-  fecha: new Date() // Fecha como objeto Date
+      pregunta_id: i + 1,
+      texto: answers?.[i] || "",
+      evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "",
+      puntaje_manual: manualScores[i],
+      comentario_manual: "",
+      fecha: new Date()
     }));
 
     const datos = {
       entrevista_id: entrevistaId,
       respuestas: respuestasEvaluadas
     };
-  // 👀 Imprimir JSON enviado al backend
+
     console.log("✅ Datos enviados al backend:", JSON.stringify(datos, null, 2));
+
     try {
       const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
         method: 'POST',
@@ -68,8 +78,8 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
     }
   };
 
-  const extractEvalDePregunta = (analysisText, preguntaId) => {
-    return analysisText || "Sin análisis"; // 👈 Valor por defecto
+  const volver = () => {
+    navigate(-1); // 👈 Regresa a la página anterior
   };
 
   return (
@@ -87,7 +97,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
         <div key={i} style={{ marginBottom: '20px' }}>
           <strong>{q}</strong>
           <div style={{ backgroundColor: '#eee', padding: '10px' }}>
-            {answers[i]}
+            {answers?.[i]}
           </div>
           <label>Puntuación (0-2): </label>
           <select
@@ -110,7 +120,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
         </button>
       )}
 
-      <button onClick={onBack} style={{ marginTop: '10px', marginLeft: '10px' }}>
+      <button onClick={volver} style={{ marginTop: '10px', marginLeft: '10px' }}>
         Volver
       </button>
     </div>

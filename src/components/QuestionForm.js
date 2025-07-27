@@ -1,7 +1,7 @@
 // frontend/src/components/QuestionForm.js
 
 import React, { useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom'; // ✅ Importar para obtener parámetros de la URL
+import { useParams, useLocation, useNavigate } from 'react-router-dom'; // ✅ Se agregó useNavigate
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -25,11 +25,13 @@ const palabrasClave = [
   ["frameworks", "trabajado", "desarrolló"]
 ];
 
-function QuestionForm({ onSubmit }) {
-  const { postulanteId } = useParams(); // ✅ Obtenemos el id desde la ruta
+function QuestionForm() {
+  const { postulanteId } = useParams();
   const location = useLocation();
   const params = new URLSearchParams(location.search);
   const entrevistadorId = params.get("entrevistadorId");
+
+  const navigate = useNavigate();
 
   const [answers, setAnswers] = useState(Array(8).fill(''));
   const [loading, setLoading] = useState(false);
@@ -81,19 +83,22 @@ function QuestionForm({ onSubmit }) {
       await new Promise(resolve => setTimeout(resolve, 800));
       const result = evaluarRespuestas(answers);
 
-      onSubmit(result, answers);
+      // 👇 Redirige a Result.js con los datos en el estado
+      navigate('/result', {
+        state: {
+          analysis: result,
+          answers,
+          entrevistadorId,
+          postulanteId,
+          entrevistaId: postulanteId // Suponiendo que entrevistaId === postulanteId
+        }
+      });
 
-      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${postulanteId}`, {
+      await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${postulanteId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ estado: 'completada' })
       });
-
-      if (!response.ok) {
-        throw new Error('Error al actualizar estado de entrevista.');
-      }
-
-      alert('✅ Respuestas guardadas y entrevista marcada como completada.');
     } catch (err) {
       console.error(err);
       setError('❌ Hubo un error al enviar las respuestas.');
