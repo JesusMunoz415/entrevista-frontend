@@ -1,7 +1,7 @@
 // frontend/src/components/Dashboard.js
 
 import React, { useState } from 'react';
-import VerPostulantes from './VerPostulantes'; // ✅ Importar el archivo externo
+import VerPostulantes from './VerPostulantes';
 
 function Dashboard({ entrevistadorId }) {
   const nombreEntrevistador = localStorage.getItem("nombreEntrevistador");
@@ -15,7 +15,7 @@ function Dashboard({ entrevistadorId }) {
   const renderContenido = () => {
     switch (vista) {
       case "postulantes":
-        return <VerPostulantes />; // ✅ Llama al componente externo
+        return <VerPostulantes />;
       case "historial":
         return <VerHistorial />;
       case "configuracion":
@@ -35,7 +35,13 @@ function Dashboard({ entrevistadorId }) {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.sidebar}>
-          <button onClick={() => window.location.href = "/inicioform"} style={styles.menuButton}>
+          <button
+            onClick={() => {
+              const id = localStorage.getItem("entrevistadorId");
+              window.location.href = `/inicioform?entrevistadorId=${id}`;
+            }}
+            style={styles.menuButton}
+          >
             📁 Gestionar Entrevistas
           </button>
           <button onClick={() => setVista("postulantes")} style={styles.menuButton}>
@@ -51,7 +57,6 @@ function Dashboard({ entrevistadorId }) {
             🚪 Cerrar sesión
           </button>
         </div>
-
         <div style={styles.content}>
           {renderContenido()}
         </div>

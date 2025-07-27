@@ -1,9 +1,14 @@
 // frontend/src/components/InicioForm.js
 import React, { useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
-function InicioForm({ onContinue, entrevistadorId }) {
+function InicioForm({ onContinue }) {
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
+
+  const location = useLocation();
+  const params = new URLSearchParams(location.search);
+  const entrevistadorId = params.get('entrevistadorId');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,17 +20,16 @@ function InicioForm({ onContinue, entrevistadorId }) {
     }
 
     try {
-          const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
+      const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           nombre: nombrePostulante,
-          correo: '',          // enviar aunque sea vacío
+          correo: '',
           telefono: ''
         }),
         credentials: 'include'
       });
-
 
       const data = await response.json();
 
