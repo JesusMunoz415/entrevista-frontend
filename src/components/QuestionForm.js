@@ -25,7 +25,7 @@ const palabrasClave = [
 ];
 
 function QuestionForm({ onSubmit, entrevistaId }) {
-  const [answers, setAnswers] = useState(Array(8).fill(''));
+  const [answers, setAnswers] = useState(Array(questions.length).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -65,6 +65,12 @@ function QuestionForm({ onSubmit, entrevistaId }) {
     setLoading(true);
     setError(null);
 
+    if (!entrevistaId) {
+      setError('❌ No se encontró la entrevista.');
+      setLoading(false);
+      return;
+    }
+
     if (answers.some(answer => answer.trim() === '')) {
       setError('Por favor, responde todas las preguntas.');
       setLoading(false);
@@ -72,24 +78,43 @@ function QuestionForm({ onSubmit, entrevistaId }) {
     }
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Evaluación automática
       const result = evaluarRespuestas(answers);
 
-      // 👇 Llama a onSubmit para flujo actual
-      onSubmit(result, answers);
+      // Guardar cada respuesta en la DB
+      for (let i = 0; i < answers.length; i++) {
+        const response = await fetch(`https://entrevista-backend.onrender.com/api/respuestas`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            entrevista_id: entrevistaId,
+            pregunta_id: i + 1,
+            respuesta: answers[i],
+            evaluacion: 'IA' // puedes cambiarlo a "manual" si quieres
+          })
+        });
 
-      // 🚀 Actualiza estado de entrevista en el backend
-      const response = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${entrevistaId}`, {
+        if (!response.ok) {
+          throw new Error(`Error al guardar la respuesta ${i + 1}`);
+        }
+      }
+
+      // Actualizar estado de entrevista a completada
+      const resEntrevista = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${entrevistaId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ estado: 'completada' })
       });
 
-      if (!response.ok) {
+      if (!resEntrevista.ok) {
         throw new Error('Error al actualizar estado de entrevista.');
       }
 
+      // Llamada al flujo de frontend
+      onSubmit(result, answers);
+
       alert('✅ Respuestas guardadas y entrevista marcada como completada.');
+
     } catch (err) {
       console.error(err);
       setError('❌ Hubo un error al enviar las respuestas.');
