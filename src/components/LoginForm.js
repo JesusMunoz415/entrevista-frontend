@@ -1,5 +1,4 @@
 // File: frontend/src/components/LoginForm.js
-// This file is part of frontend/src/components/LoginForm.js
 import React, { useState, useEffect } from 'react';
 
 function LoginForm({ onLoginExitoso, setPantalla }) {
@@ -75,7 +74,7 @@ function LoginForm({ onLoginExitoso, setPantalla }) {
         ¿No tienes cuenta?{" "}
         <button
           type="button"
-          onClick={() => setPantalla("registro")}
+          onClick={() => setPantalla && setPantalla("registro")}
           style={{ color: '#007bff', background: 'none', border: 'none', cursor: 'pointer' }}
         >
           Crear cuenta
