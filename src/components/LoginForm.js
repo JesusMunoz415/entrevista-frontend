@@ -1,10 +1,14 @@
 // File: frontend/src/components/LoginForm.js
-import React, { useState, useEffect } from 'react';
 
-function LoginForm({ onLoginExitoso, setPantalla }) {
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // ✅ Import agregado
+
+function LoginForm({ onLoginExitoso }) { // ya no necesitas setPantalla
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+
+  const navigate = useNavigate(); // ✅ Definir navigate
 
   useEffect(() => {
     const id = localStorage.getItem("entrevistadorId");
@@ -74,7 +78,7 @@ function LoginForm({ onLoginExitoso, setPantalla }) {
         ¿No tienes cuenta?{" "}
         <button
           type="button"
-          onClick={() => setPantalla && setPantalla("registro")}
+          onClick={() => navigate("/registro")} // ✅ Ahora funciona
           style={{ color: '#007bff', background: 'none', border: 'none', cursor: 'pointer' }}
         >
           Crear cuenta
