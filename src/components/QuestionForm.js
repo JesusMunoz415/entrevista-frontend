@@ -99,7 +99,7 @@ function QuestionForm({ onSubmit, entrevistaId }) {
         }
       }
 
-      // Actualizar estado de entrevista a completada
+      /* Actualizar estado de entrevista a completada
       const resEntrevista = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${entrevistaId}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -108,7 +108,8 @@ function QuestionForm({ onSubmit, entrevistaId }) {
 
       if (!resEntrevista.ok) {
         throw new Error('Error al actualizar estado de entrevista.');
-      }
+      } 
+      */
 
       // Llamada al flujo de frontend
       onSubmit(result, answers);
