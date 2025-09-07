@@ -63,8 +63,9 @@ function InicioForm() {
 
       const entrevistaId = dataEntrevista.entrevista_id;
 
-      // 3️⃣ Redirigir a la página de preguntas con entrevistaId
+      // 3️⃣ Redirigir a la página de preguntas con entrevistaId (📌 Ahora el ID se toma de la URL)
       navigate(`/entrevista/${entrevistaId}?entrevistadorId=${entrevistadorId}`);
+
 
     } catch (err) {
       console.error(err);

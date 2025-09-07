@@ -1,6 +1,6 @@
 // frontend/src/components/QuestionForm.js
-
 import React, { useState } from 'react';
+import { useParams, useLocation } from 'react-router-dom';
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -24,10 +24,16 @@ const palabrasClave = [
   ["frameworks", "trabajado", "desarrolló"]
 ];
 
-function QuestionForm({ onSubmit, entrevistaId }) {
+function QuestionForm({ onSubmit }) {
   const [answers, setAnswers] = useState(Array(questions.length).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // ✅ Obtener entrevistaId desde la URL
+  const params = useParams();
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const entrevistaId = params.id || query.get('entrevistaId'); // toma de path o query
 
   const handleInputChange = (index, value) => {
     const newAnswers = [...answers];
@@ -90,7 +96,7 @@ function QuestionForm({ onSubmit, entrevistaId }) {
             entrevista_id: entrevistaId,
             pregunta_id: i + 1,
             respuesta: answers[i],
-            evaluacion: 'IA' // puedes cambiarlo a "manual" si quieres
+            evaluacion: 'IA'
           })
         });
 
@@ -98,18 +104,6 @@ function QuestionForm({ onSubmit, entrevistaId }) {
           throw new Error(`Error al guardar la respuesta ${i + 1}`);
         }
       }
-
-      /* Actualizar estado de entrevista a completada
-      const resEntrevista = await fetch(`https://entrevista-backend.onrender.com/api/entrevistas/${entrevistaId}`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ estado: 'completada' })
-      });
-
-      if (!resEntrevista.ok) {
-        throw new Error('Error al actualizar estado de entrevista.');
-      } 
-      */
 
       // Llamada al flujo de frontend
       onSubmit(result, answers);
