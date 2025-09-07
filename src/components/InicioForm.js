@@ -1,13 +1,13 @@
 // frontend/src/components/InicioForm.js
 import React, { useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; // ✅ importaciones necesarias
+import { useLocation, useNavigate } from 'react-router-dom';
 
 function InicioForm() {
   const [nombrePostulante, setNombrePostulante] = useState('');
   const [error, setError] = useState('');
 
   const location = useLocation();
-  const navigate = useNavigate(); // ✅ para redireccionar
+  const navigate = useNavigate();
   const params = new URLSearchParams(location.search);
   const entrevistadorId = params.get('entrevistadorId');
 
@@ -21,7 +21,8 @@ function InicioForm() {
     }
 
     try {
-      const response = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
+      // 1️⃣ Crear postulante
+      const resPostulante = await fetch('https://entrevista-backend.onrender.com/api/postulantes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -32,13 +33,39 @@ function InicioForm() {
         credentials: 'include'
       });
 
-      const data = await response.json();
+      const dataPostulante = await resPostulante.json();
 
-      if (data.status === 'ok') {
-        navigate(`/entrevista/${data.id}?entrevistadorId=${entrevistadorId}`); // ✅ redirección con parámetros
-      } else {
-        setError(data.mensaje || 'No se pudo registrar el postulante.');
+      if (dataPostulante.status !== 'ok') {
+        setError(dataPostulante.mensaje || 'No se pudo registrar el postulante.');
+        return;
       }
+
+      const postulanteId = dataPostulante.id;
+
+      // 2️⃣ Crear entrevista automáticamente
+      const fecha = new Date().toISOString(); // Fecha actual
+      const resEntrevista = await fetch('https://entrevista-backend.onrender.com/api/entrevistas', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          entrevistador_id: entrevistadorId,
+          postulante_id: postulanteId,
+          fecha
+        }),
+      });
+
+      const dataEntrevista = await resEntrevista.json();
+
+      if (dataEntrevista.status !== 'ok') {
+        setError(dataEntrevista.mensaje || 'No se pudo crear la entrevista.');
+        return;
+      }
+
+      const entrevistaId = dataEntrevista.entrevista_id;
+
+      // 3️⃣ Redirigir a la página de preguntas con entrevistaId
+      navigate(`/entrevista/${entrevistaId}?entrevistadorId=${entrevistadorId}`);
+
     } catch (err) {
       console.error(err);
       setError('Error al conectar con el servidor.');
