@@ -1,6 +1,6 @@
 // frontend/src/components/QuestionForm.js
 import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -29,8 +29,11 @@ function QuestionForm({ onSubmit }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const { entrevistaId } = useParams(); // ✅ directo desde la URL
+  const params = useParams();
+  const location = useLocation();
   const navigate = useNavigate();
+  const query = new URLSearchParams(location.search);
+  const entrevistaId = params.id || query.get('entrevistaId');
 
   const handleInputChange = (index, value) => {
     const newAnswers = [...answers];
@@ -42,10 +45,8 @@ function QuestionForm({ onSubmit }) {
     const puntuaciones = answers.map((respuesta, i) => {
       let score = 0;
       const texto = respuesta.toLowerCase();
-
       if (respuesta.trim().length > 50) score += 1;
       if (palabrasClave[i].some(palabra => texto.includes(palabra))) score += 1;
-
       return { pregunta: i + 1, texto: respuesta, puntaje: score };
     });
 
@@ -59,7 +60,6 @@ function QuestionForm({ onSubmit }) {
       informe += `Pregunta ${p.pregunta}: ${p.puntaje}/2\n`;
     });
     informe += `\n➡️ Resultado final: ${resultadoFinal}`;
-
     return informe;
   };
 
@@ -84,33 +84,39 @@ function QuestionForm({ onSubmit }) {
       const result = evaluarRespuestas(answers);
 
       for (let i = 0; i < answers.length; i++) {
+        const payload = {
+          entrevista_id: entrevistaId,
+          pregunta_id: i + 1,
+          respuesta: answers[i],
+          evaluacion: 'IA'
+        };
+        console.log("📝 Enviando respuesta al backend:", payload);
+
         const response = await fetch(`https://entrevista-backend.onrender.com/api/respuestas`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            entrevista_id: entrevistaId,
-            pregunta_id: i + 1,
-            respuesta: answers[i],
-            evaluacion: 'IA'
-          })
+          body: JSON.stringify(payload)
         });
 
+        const data = await response.json();
+        console.log("📤 Respuesta del backend:", data);
+
         if (!response.ok) {
-          throw new Error(`Error al guardar la respuesta ${i + 1}`);
+          throw new Error(`Error al guardar la respuesta ${i + 1}: ${data.mensaje || 'Error desconocido'}`);
         }
       }
 
-      // Guardar en frontend
+      // Llamada al flujo de frontend
       onSubmit(result, answers);
 
-      // ✅ Redirigir a Result.js con entrevistaId
+      // Redirigir a Result.js
       navigate(`/resultado?entrevistaId=${entrevistaId}`, {
         state: { resultado: result, respuestas: answers }
       });
 
     } catch (err) {
       console.error(err);
-      setError('❌ Hubo un error al enviar las respuestas.');
+      setError(`❌ Hubo un error al enviar las respuestas: ${err.message}`);
     } finally {
       setLoading(false);
     }
