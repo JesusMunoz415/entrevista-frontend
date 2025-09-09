@@ -1,6 +1,6 @@
 // frontend/src/components/QuestionForm.js
 import React, { useState } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -29,11 +29,8 @@ function QuestionForm({ onSubmit }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // ✅ Obtener entrevistaId desde la URL
-  const params = useParams();
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const entrevistaId = params.id || query.get('entrevistaId'); // toma de path o query
+  const { entrevistaId } = useParams(); // ✅ directo desde la URL
+  const navigate = useNavigate();
 
   const handleInputChange = (index, value) => {
     const newAnswers = [...answers];
@@ -84,10 +81,8 @@ function QuestionForm({ onSubmit }) {
     }
 
     try {
-      // Evaluación automática
       const result = evaluarRespuestas(answers);
 
-      // Guardar cada respuesta en la DB
       for (let i = 0; i < answers.length; i++) {
         const response = await fetch(`https://entrevista-backend.onrender.com/api/respuestas`, {
           method: 'POST',
@@ -105,10 +100,13 @@ function QuestionForm({ onSubmit }) {
         }
       }
 
-      // Llamada al flujo de frontend
+      // Guardar en frontend
       onSubmit(result, answers);
 
-      alert('✅ Respuestas guardadas y entrevista marcada como completada.');
+      // ✅ Redirigir a Result.js con entrevistaId
+      navigate(`/resultado?entrevistaId=${entrevistaId}`, {
+        state: { resultado: result, respuestas: answers }
+      });
 
     } catch (err) {
       console.error(err);

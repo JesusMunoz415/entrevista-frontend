@@ -1,7 +1,7 @@
 // frontend/src/App.js
 
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'; // ✅ Añadir esto
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import RegistroEntrevistador from './components/RegistroEntrevistador';
 import InicioForm from './components/InicioForm';
@@ -17,7 +17,7 @@ function App() {
   const [analysis, setAnalysis] = useState('');
   const [answers, setAnswers] = useState([]);
 
-  // ✅ Cargar sesión desde localStorage en recarga de página
+  // ✅ Recuperar sesión desde localStorage
   useEffect(() => {
     const id = localStorage.getItem("entrevistadorId");
     const nombre = localStorage.getItem("nombreEntrevistador");
@@ -36,9 +36,9 @@ function App() {
     window.location.href = "/dashboard";
   };
 
-  const handleInicio = (postId) => {
-    setPostulanteId(postId);
-    window.location.href = `/entrevista/${postId}`;
+  const handleInicio = (entrevistaId) => {
+    setPostulanteId(entrevistaId);
+    window.location.href = `/entrevista/${entrevistaId}`;
   };
 
   const handleFormSubmit = (result, respuestasUsuario) => {
@@ -70,7 +70,13 @@ function App() {
                 setPostulanteId(null);
                 window.location.href = '/';
               }}
-              style={{ padding: '6px 12px', backgroundColor: '#dc3545', color: 'white', border: 'none', borderRadius: '6px' }}
+              style={{
+                padding: '6px 12px',
+                backgroundColor: '#dc3545',
+                color: 'white',
+                border: 'none',
+                borderRadius: '6px'
+              }}
             >
               Cerrar sesión
             </button>
@@ -82,7 +88,8 @@ function App() {
           <Route path="/registro" element={<RegistroEntrevistador onVolver={() => window.location.href = '/'} />} />
           <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
           <Route path="/inicioform" element={<InicioForm onContinue={handleInicio} entrevistadorId={entrevistadorId} />} />
-          <Route path="/entrevista/:postulanteId" element={<QuestionForm onSubmit={handleFormSubmit} entrevistadorId={entrevistadorId} postulanteId={postulanteId} />} />
+          {/* ✅ Ahora usamos entrevistaId en la URL */}
+          <Route path="/entrevista/:entrevistaId" element={<QuestionForm onSubmit={handleFormSubmit} entrevistadorId={entrevistadorId} />} />
           <Route path="/resultado" element={<Result onBack={handleBack} />} />
           <Route path="/historial" element={<Historial entrevistadorId={entrevistadorId} onVolver={() => window.location.href = '/dashboard'} />} />
         </Routes>
