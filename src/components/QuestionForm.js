@@ -33,7 +33,10 @@ function QuestionForm({ onSubmit }) {
   const location = useLocation();
   const navigate = useNavigate();
   const query = new URLSearchParams(location.search);
-  const entrevistaId = params.id || query.get('entrevistaId');
+
+  // ✅ Capturar correctamente IDs
+  const entrevistaId = params.entrevistaId || query.get('entrevistaId');
+  const entrevistadorId = query.get('entrevistadorId') || null;
 
   const handleInputChange = (index, value) => {
     const newAnswers = [...answers];
@@ -88,7 +91,8 @@ function QuestionForm({ onSubmit }) {
           entrevista_id: entrevistaId,
           pregunta_id: i + 1,
           respuesta: answers[i],
-          evaluacion: 'IA'
+          evaluacion: 'IA',
+          entrevistador_id: entrevistadorId // opcional
         };
         console.log("📝 Enviando respuesta al backend:", payload);
 
@@ -109,9 +113,9 @@ function QuestionForm({ onSubmit }) {
       // Llamada al flujo de frontend
       onSubmit(result, answers);
 
-      // Redirigir a Result.js
+      // Redirigir a Result.js y pasar datos por state
       navigate(`/resultado?entrevistaId=${entrevistaId}`, {
-        state: { resultado: result, respuestas: answers }
+        state: { resultado: result, respuestas: answers, entrevistadorId }
       });
 
     } catch (err) {
