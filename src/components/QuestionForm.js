@@ -95,8 +95,8 @@ function QuestionForm({ onSubmit, entrevistadorId, postulanteId }) {
       for (let i = 0; i < answers.length; i++) {
         const payload = {
           entrevista_id: entrevistaId,
-          postulante_id: postulanteId,         // ⬅️ agregado
-          entrevistador_id: entrevistadorId,   // ⬅️ agregado
+          postulante_id: postulanteId,         // ⬅️ agregado: ahora se envía el ID del postulante
+          entrevistador_id: entrevistadorId,   // ⬅️ agregado: ahora se envía el ID del entrevistador
           pregunta_id: i + 1,
           respuesta: answers[i],
           evaluacion: 'IA'
