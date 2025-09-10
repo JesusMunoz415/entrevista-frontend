@@ -1,5 +1,4 @@
 // frontend/src/App.js
-
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
@@ -13,7 +12,6 @@ import Dashboard from './components/Dashboard';
 function App() {
   const [entrevistadorId, setEntrevistadorId] = useState(null);
   const [nombreEntrevistador, setNombreEntrevistador] = useState('');
-  const [postulanteId, setPostulanteId] = useState(null);
   const [analysis, setAnalysis] = useState('');
   const [answers, setAnswers] = useState([]);
 
@@ -37,7 +35,7 @@ function App() {
   };
 
   const handleInicio = (entrevistaId) => {
-    setPostulanteId(entrevistaId);
+    // ✅ Redirigir a la URL con entrevistaId
     window.location.href = `/entrevista/${entrevistaId}`;
   };
 
@@ -50,7 +48,6 @@ function App() {
   const handleBack = () => {
     setAnalysis('');
     setAnswers([]);
-    setPostulanteId(null);
     window.location.href = "/dashboard";
   };
 
@@ -67,7 +64,6 @@ function App() {
                 localStorage.clear();
                 setEntrevistadorId(null);
                 setNombreEntrevistador('');
-                setPostulanteId(null);
                 window.location.href = '/';
               }}
               style={{
@@ -88,7 +84,7 @@ function App() {
           <Route path="/registro" element={<RegistroEntrevistador onVolver={() => window.location.href = '/'} />} />
           <Route path="/dashboard" element={<Dashboard entrevistadorId={entrevistadorId} />} />
           <Route path="/inicioform" element={<InicioForm onContinue={handleInicio} entrevistadorId={entrevistadorId} />} />
-          {/* ✅ Ahora usamos entrevistaId en la URL */}
+          {/* ✅ Usamos entrevistaId desde la URL */}
           <Route path="/entrevista/:entrevistaId" element={<QuestionForm onSubmit={handleFormSubmit} entrevistadorId={entrevistadorId} />} />
           <Route path="/resultado" element={<Result onBack={handleBack} />} />
           <Route path="/historial" element={<Historial entrevistadorId={entrevistadorId} onVolver={() => window.location.href = '/dashboard'} />} />
