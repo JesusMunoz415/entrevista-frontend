@@ -24,7 +24,7 @@ const palabrasClave = [
   ["frameworks", "trabajado", "desarrolló"]
 ];
 
-function QuestionForm({ onSubmit }) {
+function QuestionForm({ onSubmit, entrevistadorId, postulanteId }) {
   const [answers, setAnswers] = useState(Array(questions.length).fill(''));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -34,9 +34,8 @@ function QuestionForm({ onSubmit }) {
   const navigate = useNavigate();
   const query = new URLSearchParams(location.search);
 
-  // ✅ Capturar correctamente IDs
+  // ✅ Corregido: tomar entrevistaId desde la URL correctamente
   const entrevistaId = params.entrevistaId || query.get('entrevistaId');
-  const entrevistadorId = query.get('entrevistadorId') || null;
 
   const handleInputChange = (index, value) => {
     const newAnswers = [...answers];
@@ -77,6 +76,12 @@ function QuestionForm({ onSubmit }) {
       return;
     }
 
+    if (!postulanteId || !entrevistadorId) {
+      setError('❌ Faltan datos de postulante o entrevistador.');
+      setLoading(false);
+      return;
+    }
+
     if (answers.some(answer => answer.trim() === '')) {
       setError('Por favor, responde todas las preguntas.');
       setLoading(false);
@@ -86,14 +91,17 @@ function QuestionForm({ onSubmit }) {
     try {
       const result = evaluarRespuestas(answers);
 
+      // ✅ Enviar cada respuesta al backend con todos los campos necesarios
       for (let i = 0; i < answers.length; i++) {
         const payload = {
           entrevista_id: entrevistaId,
+          postulante_id: postulanteId,         // ⬅️ agregado
+          entrevistador_id: entrevistadorId,   // ⬅️ agregado
           pregunta_id: i + 1,
           respuesta: answers[i],
-          evaluacion: 'IA',
-          entrevistador_id: entrevistadorId // opcional
+          evaluacion: 'IA'
         };
+
         console.log("📝 Enviando respuesta al backend:", payload);
 
         const response = await fetch(`https://entrevista-backend.onrender.com/api/respuestas`, {
@@ -113,9 +121,9 @@ function QuestionForm({ onSubmit }) {
       // Llamada al flujo de frontend
       onSubmit(result, answers);
 
-      // Redirigir a Result.js y pasar datos por state
+      // Redirigir a Result.js con los datos
       navigate(`/resultado?entrevistaId=${entrevistaId}`, {
-        state: { resultado: result, respuestas: answers, entrevistadorId }
+        state: { resultado: result, respuestas: answers }
       });
 
     } catch (err) {

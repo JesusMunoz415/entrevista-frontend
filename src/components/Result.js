@@ -1,6 +1,6 @@
 // frontend/src/components/Result.js
-
 import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom'; // ✅ importados
 
 const questions = [
   "Cuéntame un poco sobre ti.",
@@ -13,7 +13,15 @@ const questions = [
   "¿Tienes experiencia previa relacionada con este tipo de trabajo?"
 ];
 
-function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entrevistaId }) {
+function Result() {
+  const location = useLocation(); // ✅ recibe datos desde navigate
+  const navigate = useNavigate();
+
+  // ✅ Extraer datos que mandamos desde QuestionForm
+  const { resultado, respuestas } = location.state || {};
+  const query = new URLSearchParams(location.search);
+  const entrevistaId = query.get("entrevistaId"); // tomado de la URL
+
   const [manualScores, setManualScores] = useState(Array(8).fill(0));
   const [enviado, setEnviado] = useState(false);
 
@@ -30,26 +38,24 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
 
   const guardarEnBase = async () => {
     const respuestasEvaluadas = questions.map((q, i) => ({
-  pregunta_id: i + 1,
-  texto: answers[i] || "",
-  evaluacion_automatica: extractEvalDePregunta(analysis, i + 1) || "",
-  puntaje_manual: manualScores[i],
-  comentario_manual: "",
-  fecha: new Date() // Fecha como objeto Date
+      pregunta_id: i + 1,
+      texto: respuestas?.[i] || "",
+      evaluacion_automatica: extractEvalDePregunta(resultado, i + 1) || "",
+      puntaje_manual: manualScores[i],
+      comentario_manual: "",
+      fecha: new Date()
     }));
 
     const datos = {
       entrevista_id: entrevistaId,
       respuestas: respuestasEvaluadas
     };
-  // 👀 Imprimir JSON enviado al backend
+
     console.log("✅ Datos enviados al backend:", JSON.stringify(datos, null, 2));
     try {
       const response = await fetch('https://entrevista-backend.onrender.com/api/respuestas', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(datos),
       });
 
@@ -79,7 +85,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
         backgroundColor: '#f5f5f5', padding: '15px', borderRadius: '10px',
         whiteSpace: 'pre-wrap', marginBottom: '30px'
       }}>
-        {analysis}
+        {resultado}
       </div>
 
       <h3>📋 Evaluación Manual</h3>
@@ -87,7 +93,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
         <div key={i} style={{ marginBottom: '20px' }}>
           <strong>{q}</strong>
           <div style={{ backgroundColor: '#eee', padding: '10px' }}>
-            {answers[i]}
+            {respuestas?.[i] || "Sin respuesta"}
           </div>
           <label>Puntuación (0-2): </label>
           <select
@@ -110,7 +116,7 @@ function Result({ analysis, answers, onBack, postulanteId, entrevistadorId, entr
         </button>
       )}
 
-      <button onClick={onBack} style={{ marginTop: '10px', marginLeft: '10px' }}>
+      <button onClick={() => navigate(-1)} style={{ marginTop: '10px', marginLeft: '10px' }}>
         Volver
       </button>
     </div>
