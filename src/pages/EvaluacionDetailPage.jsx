@@ -1,3 +1,5 @@
+// frontend/src/pages/EvaluacionDetailPage.jsx
+
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -43,7 +45,8 @@ import {
   Lightbulb as LightbulbIcon
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
-import axios from 'axios';
+// import axios from 'axios'; // 🗙 Eliminado
+import api from '../api/axiosConfig'; // ✅ Añadido - (Ajusta esta ruta si es necesario)
 import { toast } from 'react-hot-toast';
 
 const EvaluacionDetailPage = () => {
@@ -79,8 +82,9 @@ const EvaluacionDetailPage = () => {
       
       const token = localStorage.getItem('token');
       
-      const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/evaluacion/${id}/estado`,
+      // ✅ CORREGIDO: Se usa `api.get` y se elimina el prefijo de la URL
+      const response = await api.get(
+        `/evaluacion/${id}/estado`,
         {
           headers: { Authorization: `Bearer ${token}` }
         }
@@ -122,8 +126,9 @@ const EvaluacionDetailPage = () => {
       
       const token = localStorage.getItem('token');
       
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/evaluacion/${id}/informe-critico`,
+      // ✅ CORREGIDO: Se usa `api.post` y se elimina el prefijo de la URL
+      const response = await api.post(
+        `/evaluacion/${id}/informe-critico`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` }
@@ -162,8 +167,9 @@ const EvaluacionDetailPage = () => {
       
       const token = localStorage.getItem('token');
       
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/evaluacion/${id}/evaluar`,
+      // ✅ CORREGIDO: Se usa `api.post` y se elimina el prefijo de la URL
+      await api.post(
+        `/evaluacion/${id}/evaluar`,
         {
           decision,
           comentarios: comentarios.trim()
@@ -511,7 +517,7 @@ const EvaluacionDetailPage = () => {
       )}
 
       {/* Evaluación manual */}
-         {entrevista?.evaluacion_manual?.estado === 'pendiente' && (
+          {entrevista?.evaluacion_manual?.estado === 'pendiente' && (
         <Card>
           <CardContent>
             <Typography variant="h6" gutterBottom>
@@ -591,7 +597,7 @@ const EvaluacionDetailPage = () => {
             <Divider sx={{ mb: 2 }} />
             
             <Box display="flex" alignItems="center" gap={2} mb={2}>
-                {entrevista?.evaluacion_manual?.estado === 'aprobado' ? (
+              {entrevista?.evaluacion_manual?.estado === 'aprobado' ? (
                 <Chip
                   icon={<CheckCircleIcon />}
                   label="Candidato Aprobado"
