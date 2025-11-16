@@ -1,7 +1,11 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+// frontend/src/services/userService.js
+// --- VERSIÓN CORREGIDA Y REFACTORIZADA ---
+
+import api from '../utils/axiosConfig'; // Asegúrate que esta ruta a tu axiosConfig sea correcta
 
 /**
  * Servicio para operaciones relacionadas con el usuario
+ * (Refactorizado para usar la instancia global de Axios)
  */
 class UserService {
   /**
@@ -9,42 +13,9 @@ class UserService {
    * @returns {Promise<Object>} Respuesta del servidor
    */
   async removeProfileImage() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/usuarios/remove-profile-image`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          ...this.getAuthHeaders(),
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al eliminar la imagen');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error en removeProfileImage:', error);
-      throw error;
-    }
-  }
-
-  /**
-   * Obtiene el token de autenticación del localStorage
-   */
-  getAuthToken() {
-    return localStorage.getItem('token');
-  }
-
-  /**
-   * Obtiene los headers de autenticación
-   */
-  getAuthHeaders() {
-    const token = this.getAuthToken();
-    return {
-      'Authorization': `Bearer ${token}`,
-    };
+    // El interceptor de 'api' ya maneja el token y los errores con toast
+    const response = await api.delete('/usuarios/remove-profile-image');
+    return response.data;
   }
 
   /**
@@ -53,28 +24,13 @@ class UserService {
    * @returns {Promise<Object>} Respuesta del servidor con la URL de la imagen
    */
   async uploadProfileImage(imageFile) {
-    try {
-      const formData = new FormData();
-      formData.append('profileImage', imageFile);
+    const formData = new FormData();
+    formData.append('profileImage', imageFile);
 
-      const response = await fetch(`${API_BASE_URL}/api/usuarios/upload-profile-image`, {
-        method: 'POST',
-        headers: {
-          ...this.getAuthHeaders(),
-        },
-        body: formData,
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al subir la imagen');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error en uploadProfileImage:', error);
-      throw error;
-    }
+    // Axios detectará FormData y ajustará el Content-Type automáticamente
+    // El token y el error se manejan en el interceptor
+    const response = await api.post('/usuarios/upload-profile-image', formData);
+    return response.data;
   }
 
   /**
@@ -82,25 +38,9 @@ class UserService {
    * @returns {Promise<Object>} Datos del perfil del usuario
    */
   async getUserProfile() {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/usuarios/profile`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          ...this.getAuthHeaders(),
-        },
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Error al obtener el perfil');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error en getUserProfile:', error);
-      throw error;
-    }
+    // El interceptor de 'api' ya maneja el token y los errores con toast
+    const response = await api.get('/usuarios/profile');
+    return response.data;
   }
 
   /**
@@ -111,14 +51,23 @@ class UserService {
   getImageUrl(imagePath) {
     if (!imagePath) return null;
     
-    // Si ya es una URL completa, devolverla tal como está
+    // Si ya es una URL completa (ej. de un CDN), devolverla tal como está
     if (imagePath.startsWith('http')) {
       return imagePath;
     }
     
-    // Construir URL completa para imágenes del servidor
-    return `${API_BASE_URL}${imagePath}`;
+    // Para imágenes servidas por nuestro backend, construimos la URL.
+    // Asumimos que VITE_API_URL es 'https://.../api' y las imágenes
+    // se sirven desde la raíz del backend (ej. '/uploads/img.png').
+    // Por lo tanto, quitamos el '/api' del baseURL.
+    const baseUrl = import.meta.env.VITE_API_URL.replace('/api', '');
+    
+    // Asegurarse de que la ruta de la imagen comience con un '/'
+    const cleanPath = imagePath.startsWith('/') ? imagePath : `/${imagePath}`;
+
+    return `${baseUrl}${cleanPath}`;
   }
 }
 
+// Exportamos una instancia única del servicio (Singleton pattern)
 export default new UserService();
