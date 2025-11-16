@@ -19,7 +19,7 @@ import LoginIcon from '@mui/icons-material/Login';
 
 function LoginPage() {
   // La URL de Google login debe ser directa al backend ya que es una redirección
-  const googleLoginUrl = 'http://localhost:3001/api/auth/google';
+  const googleLoginUrl = `${import.meta.env.VITE_API_URL}/auth/google`;
 
   return (
     <Box
