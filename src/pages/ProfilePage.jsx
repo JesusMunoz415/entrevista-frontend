@@ -1,3 +1,5 @@
+// frontend/src/pages/ProfilePage.jsx
+
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../utils/axiosConfig';

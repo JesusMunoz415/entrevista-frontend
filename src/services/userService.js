@@ -27,9 +27,19 @@ class UserService {
     const formData = new FormData();
     formData.append('profileImage', imageFile);
 
-    // Axios detectará FormData y ajustará el Content-Type automáticamente
-    // El token y el error se manejan en el interceptor
-    const response = await api.post('/usuarios/upload-profile-image', formData);
+    // ✅ CORRECCIÓN AÑADIDA:
+    // Anulamos el 'Content-Type' global ('application/json')
+    // para que Axios pueda establecer 'multipart/form-data' por sí mismo.
+    const response = await api.post(
+      '/usuarios/upload-profile-image', 
+      formData,
+      {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+    
     return response.data;
   }
 
