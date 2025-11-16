@@ -1,3 +1,5 @@
+//frontend/src/utils/axiosConfig.js
+
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -8,7 +10,7 @@ import toast from 'react-hot-toast';
 
 // Crear instancia de axios
 const api = axios.create({
-  baseURL: 'http://192.168.100.62:3001/api',
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 10000, // 10 segundos
   headers: {
     'Content-Type': 'application/json',
