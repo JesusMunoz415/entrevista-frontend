@@ -46,7 +46,7 @@ import {
 } from '@mui/icons-material';
 import { useNavigate, useParams } from 'react-router-dom';
 // import axios from 'axios'; // 🗙 Eliminado
-import api from '../api/axiosConfig'; // ✅ Añadido - (Ajusta esta ruta si es necesario)
+import api from '../utils/axiosConfig'; // Esta es la ruta correcta // ✅ Añadido - (Ajusta esta ruta si es necesario)
 import { toast } from 'react-hot-toast';
 
 const EvaluacionDetailPage = () => {
